@@ -1,0 +1,23 @@
+========================================================================
+   BÁO CÁO TỔNG HỢP KẾT QUẢ DỰ BÁO VÀ PHÂN TÍCH RỦI RO HỌC VỤ
+========================================================================
+
+1. Tổng số sinh viên theo dõi: 1,000 sinh viên.
+2. Phân bố Mức độ Rủi ro Học vụ:
+   - Mức Thấp        :  471 SV ( 47.1%)
+   - Mức Trung bình  :  334 SV ( 33.4%)
+   - Mức Cao         :  110 SV ( 11.0%)
+   - Mức Rất thấp    :   85 SV (  8.5%)
+
+3. Điểm Số Trung Bình Học Phần:
+   - Điểm THPT Trung bình      : 24.38
+   - Điểm Giữa Kỳ Trung bình   : 7.13
+   - Tỷ lệ Chuyên Cần trung bình: 62.25%
+   - Điểm Tổng Kết Dự Báo TB   : 6.85
+
+4. Khuyến nghị Can thiệp Trọng tâm cho Giảng viên:
+   - Tập trung hỗ trợ 110 sinh viên nhóm Rủi ro 'Cao' có tỷ lệ chuyên cần < 60%.
+   - Tổ chức phụ đạo bài tập LMS cho nhóm 334 sinh viên có điểm giữa kỳ chưa đạt.
+
+------------------------------------------------------------------------
+Lưu ý Đạo đức: Báo cáo này mang tính chất gợi ý hỗ trợ ra quyết định sư phạm.

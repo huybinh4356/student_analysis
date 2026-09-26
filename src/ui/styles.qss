@@ -1,0 +1,165 @@
+/* Professional Academic Dark Theme Stylesheet for Student Analysis App */
+
+QMainWindow {
+    background-color: #0b132b;
+    color: #f8fafc;
+    font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+}
+
+QWidget {
+    color: #f8fafc;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 13px;
+}
+
+/* Sidebar Navigation */
+#sidebar {
+    background-color: #1c2541;
+    border-right: 1px solid #3a506b;
+    min-width: 220px;
+    max-width: 220px;
+}
+
+#appTitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: #48cae4;
+    padding: 20px 16px 12px 16px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+#sidebar QPushButton {
+    background-color: transparent;
+    color: #94a3b8;
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    margin: 3px 8px;
+}
+
+#sidebar QPushButton:hover {
+    background-color: #3a506b;
+    color: #48cae4;
+}
+
+#sidebar QPushButton:checked {
+    background-color: #0077b6;
+    color: #ffffff;
+}
+
+/* Section Header Titles */
+#sectionTitle {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 4px;
+}
+
+#sectionSubtitle {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 12px;
+}
+
+/* Cards & Container Frames */
+QFrame.card {
+    background-color: #1c2541;
+    border: 1px solid #3a506b;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+QGroupBox {
+    font-weight: 600;
+    font-size: 13px;
+    color: #48cae4;
+    border: 1px solid #3a506b;
+    border-radius: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    left: 12px;
+    padding: 0 6px;
+    background-color: #1c2541;
+}
+
+/* Buttons */
+QPushButton.primary-btn {
+    background-color: #0077b6;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 9px 18px;
+    border: none;
+    border-radius: 6px;
+}
+
+QPushButton.primary-btn:hover {
+    background-color: #023e8a;
+}
+
+QPushButton.secondary-btn {
+    background-color: #3a506b;
+    color: #e2e8f0;
+    font-weight: 600;
+    padding: 9px 18px;
+    border: 1px solid #5bc0be;
+    border-radius: 6px;
+}
+
+QPushButton.secondary-btn:hover {
+    background-color: #5bc0be;
+    color: #0b132b;
+}
+
+/* Table Widget Styling */
+QTableWidget {
+    background-color: #0b132b;
+    gridline-color: #3a506b;
+    border: 1px solid #3a506b;
+    border-radius: 6px;
+    selection-background-color: #0077b6;
+    selection-color: #ffffff;
+}
+
+QHeaderView::section {
+    background-color: #1c2541;
+    color: #48cae4;
+    font-weight: 600;
+    padding: 8px;
+    border: none;
+    border-bottom: 2px solid #0077b6;
+}
+
+/* Form Controls & Dropdowns */
+QComboBox, QLineEdit, QSpinBox {
+    background-color: #0b132b;
+    border: 1px solid #3a506b;
+    border-radius: 6px;
+    padding: 7px 10px;
+    color: #f8fafc;
+}
+
+QComboBox:focus, QLineEdit:focus {
+    border: 1px solid #48cae4;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 20px;
+}
+
+/* Status Bar */
+QStatusBar {
+    background-color: #1c2541;
+    color: #94a3b8;
+    border-top: 1px solid #3a506b;
+    font-size: 12px;
+}
