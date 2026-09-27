@@ -59,20 +59,41 @@ def clean_and_impute_data(df: pd.DataFrame) -> pd.DataFrame:
     return cleaned
 
 
-def ingest_excel_to_db(file_path: Path) -> int:
+def check_data_exists() -> bool:
+    """Checks if database has existing student records."""
+    try:
+        Base.metadata.create_all(bind=engine)
+        db: Session = SessionLocal()
+        count = db.query(Student).count()
+        db.close()
+        return count > 0
+    except Exception:
+        return False
+
+
+def ingest_excel_to_db(file_path: Path, force: bool = False) -> int:
     """
     Reads student dataset from Excel file, cleans data, and populates PostgreSQL.
+    If force=False and database already contains data, skips re-ingestion for fast startup.
 
     Args:
         file_path: Path to Excel data file.
+        force: If True, forces dropping tables and re-ingesting data.
 
     Returns:
-        int: Number of records inserted.
+        int: Number of records in database.
 
     Raises:
         FileNotFoundError: If Excel file does not exist.
         ValueError: If Excel data is empty or invalid.
     """
+    if not force and check_data_exists():
+        db: Session = SessionLocal()
+        count = db.query(Student).count()
+        db.close()
+        print(f"Database already contains {count} records. Skipping re-ingestion for fast startup.")
+        return count
+
     if not file_path.exists():
         raise FileNotFoundError(f"Excel file not found at path: {file_path}")
 
@@ -129,6 +150,9 @@ def ingest_excel_to_db(file_path: Path) -> int:
 
 
 if __name__ == "__main__":
+    import sys
+    force_ingest = "--force" in sys.argv
     data_file = Path(__file__).resolve().parents[2] / "data" / "du_lieu_sinh_vien_tong_hop.xlsx"
-    count = ingest_excel_to_db(data_file)
-    print(f"Successfully ingested {count} student records into PostgreSQL database!")
+    count = ingest_excel_to_db(data_file, force=force_ingest)
+    print(f"Successfully verified/ingested {count} student records into PostgreSQL database!")
+
