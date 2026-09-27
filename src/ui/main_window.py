@@ -10,8 +10,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt
 
-from src.ui.upload_widget import UploadWidget
-from src.ui.data_health_widget import DataHealthWidget
+from src.ui.data_management_widget import DataManagementWidget
 from src.ui.chart_widget import ChartWidget
 from src.ui.analysis_widget import AnalysisWidget
 from src.ui.diagnosis_widget import DiagnosisWidget
@@ -48,7 +47,7 @@ class MainWindow(QMainWindow):
         sidebar_layout.addWidget(app_title)
 
         # Navigation Buttons (Clean corporate design)
-        self.btn_data_health = QPushButton("1. Sức Khỏe Dữ Liệu Dataset")
+        self.btn_data = QPushButton("1. Dữ Liệu & Ingest CSDL")
         self.btn_charts = QPushButton("2. Tùy Chọn Biểu Đồ EDA")
         self.btn_analysis = QPushButton("3. Dự Báo ML & Nguy Cơ")
         self.btn_diagnosis = QPushButton("4. Chẩn Đoán & Missing Data")
@@ -56,7 +55,7 @@ class MainWindow(QMainWindow):
         self.btn_reports = QPushButton("6. Xuất Báo Cáo Tổng Hợp")
 
         self.nav_buttons = [
-            self.btn_data_health,
+            self.btn_data,
             self.btn_charts,
             self.btn_analysis,
             self.btn_diagnosis,
@@ -80,14 +79,14 @@ class MainWindow(QMainWindow):
         # 2. Main Content Area (StackedWidget)
         self.stacked_widget = QStackedWidget()
 
-        self.data_health_page = DataHealthWidget()
+        self.data_page = DataManagementWidget()
         self.chart_page = ChartWidget()
         self.analysis_page = AnalysisWidget()
         self.diagnosis_page = DiagnosisWidget()
         self.whatif_page = WhatIfWidget()
         self.report_page = ReportWidget()
 
-        self.stacked_widget.addWidget(self.data_health_page)
+        self.stacked_widget.addWidget(self.data_page)
         self.stacked_widget.addWidget(self.chart_page)
         self.stacked_widget.addWidget(self.analysis_page)
         self.stacked_widget.addWidget(self.diagnosis_page)
