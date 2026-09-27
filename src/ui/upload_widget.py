@@ -70,8 +70,12 @@ class UploadWidget(QWidget):
 
             for i in range(len(df)):  # Display all rows in database
                 for j, col in enumerate(df.columns):
-                    val = str(df.iloc[i, j])
-                    item = QTableWidgetItem(val)
+                    val = df.iloc[i, j]
+                    if pd.isna(val) or val is None or str(val).strip().lower() in ["none", "nan", "<na>", ""]:
+                        item = QTableWidgetItem("Chưa có dữ liệu")
+                        item.setForeground(Qt.GlobalColor.red)
+                    else:
+                        item = QTableWidgetItem(str(val))
                     item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                     self.table.setItem(i, j, item)
 

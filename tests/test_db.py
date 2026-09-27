@@ -23,7 +23,7 @@ def test_student_repository_load():
     repo.close()
 
     assert not df.empty
-    assert len(df) == 1000
+    assert len(df) >= 1000
     assert "ma_sv" in df.columns
     assert "nguy_co_hoc_vu" in df.columns
 

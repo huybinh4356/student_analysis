@@ -35,13 +35,17 @@ def test_preprocessor_split_and_transform():
     X, y_reg, y_cls = preprocessor.prepare_features(fe_df)
     splits = preprocessor.split_data(X, y_reg, y_cls)
 
-    assert len(splits["X_train"]) == 800
-    assert len(splits["X_test"]) == 200
+    n_total = len(df)
+    n_test = int(n_total * 0.2)
+    n_train = n_total - n_test
+
+    assert len(splits["X_train"]) == n_train
+    assert len(splits["X_test"]) == n_test
 
     X_train_t, X_test_t, feature_names = preprocessor.encode_and_scale(
         splits["X_train"], splits["X_test"]
     )
 
-    assert X_train_t.shape[0] == 800
-    assert X_test_t.shape[0] == 200
+    assert X_train_t.shape[0] == n_train
+    assert X_test_t.shape[0] == n_test
     assert X_train_t.shape[1] == len(feature_names)

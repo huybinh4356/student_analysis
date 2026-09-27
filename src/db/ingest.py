@@ -14,8 +14,8 @@ from src.db.models import Student
 
 def clean_and_impute_data(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Cleans raw dataframe: strips string whitespace, coercively casts types,
-    and imputes missing values (median for numeric, mode for categorical - R-DATA-05).
+    Cleans raw dataframe: strips string whitespace, coercively casts numeric types.
+    Preserves raw NULL/missing values without auto-imputing fabricated data into the database.
 
     Args:
         df: Raw DataFrame.
@@ -25,12 +25,7 @@ def clean_and_impute_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     cleaned = df.copy()
 
-    # 1. Strip string whitespace
-    string_cols = cleaned.select_dtypes(include=['object', 'string']).columns
-    for c in string_cols:
-        cleaned[c] = cleaned[c].astype(str).str.strip()
-
-    # 2. Convert numerical columns safely
+    # 1. Convert numerical columns safely (invalid values coerced to NaN)
     numeric_cols = [
         "diem_thpt", "diem_gk", "lms_gio_truy_cap", "lms_xem_video",
         "nop_bai_dung_han", "diem_quiz", "diem_bai_tap", "muc_do_stress",
@@ -39,22 +34,12 @@ def clean_and_impute_data(df: pd.DataFrame) -> pd.DataFrame:
     for c in numeric_cols:
         if c in cleaned.columns:
             cleaned[c] = pd.to_numeric(cleaned[c], errors='coerce')
-            # Impute missing with median (R-DATA-05)
-            median_val = cleaned[c].median()
-            if pd.isna(median_val):
-                median_val = 5.0
-            cleaned[c] = cleaned[c].fillna(median_val)
 
-    # 3. Categorical missing imputation with mode (R-DATA-05)
-    categorical_cols = ["gioi_tinh", "que_quan", "nganh_hoc", "hoan_canh_kt", "di_lam_them", "muc_tuong_tac", "nguy_co_hoc_vu"]
-    for c in categorical_cols:
-        if c in cleaned.columns:
-            mode_val = cleaned[c].mode()[0] if not cleaned[c].mode().empty else "Bình thường"
-            cleaned[c] = cleaned[c].fillna(mode_val)
-
-    # 4. Fill missing notes
-    if "ghi_chu_gv" in cleaned.columns:
-        cleaned["ghi_chu_gv"] = cleaned["ghi_chu_gv"].fillna("Có ý thức học tập.")
+    # 2. Strip string whitespace and treat empty / nan string as None
+    string_cols = cleaned.select_dtypes(include=['object', 'string']).columns
+    for c in string_cols:
+        cleaned[c] = cleaned[c].astype(str).str.strip()
+        cleaned[c] = cleaned[c].replace({"nan": None, "None": None, "": None, "NaN": None, "<NA>": None})
 
     return cleaned
 
@@ -139,8 +124,9 @@ def ingest_excel_to_db(file_path: Path, force: bool = False) -> int:
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
-    # Convert DataFrame to list of Student ORM objects
-    students = [Student(**row.to_dict()) for _, row in cleaned_df.iterrows()]
+    # Convert DataFrame to list of dicts, setting all nulls/NaN to None for SQL NULL
+    records = cleaned_df.where(pd.notnull(cleaned_df), None).to_dict(orient="records")
+    students = [Student(**r) for r in records]
 
     db: Session = SessionLocal()
     try:

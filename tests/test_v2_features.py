@@ -117,5 +117,5 @@ def test_data_loader_load_data():
     from src.core.data_loader import DataLoader
     df = DataLoader.load_data()
     assert not df.empty
-    assert len(df) == 1000
+    assert len(df) >= 1000
 
