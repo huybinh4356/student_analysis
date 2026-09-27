@@ -84,8 +84,7 @@ class DiagnosisWidget(QWidget):
     def load_student_list(self):
         """Loads student records into dropdown combo box."""
         try:
-            loader = DataLoader()
-            self.students_df = loader.load_data()
+            self.students_df = DataLoader.load_data()
         except Exception:
             self.students_df = pd.DataFrame()
 

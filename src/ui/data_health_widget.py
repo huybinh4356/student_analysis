@@ -76,8 +76,7 @@ class DataHealthWidget(QWidget):
                 item.widget().deleteLater()
 
         try:
-            loader = DataLoader()
-            df = loader.load_data()
+            df = DataLoader.load_data()
         except Exception as e:
             err_label = QLabel(f"Không thể đọc CSDL hoặc file dữ liệu: {str(e)}")
             err_label.setStyleSheet("color: #ef4444; font-size: 14px;")

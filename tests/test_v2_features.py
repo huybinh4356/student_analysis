@@ -110,3 +110,12 @@ def test_scenario_manager():
     all_scenarios = mgr.get_all_scenarios()
     assert len(all_scenarios) == 1
     assert all_scenarios[0].student_id == "202300003"
+
+
+def test_data_loader_load_data():
+    """Verify DataLoader.load_data static method loads non-empty DataFrame."""
+    from src.core.data_loader import DataLoader
+    df = DataLoader.load_data()
+    assert not df.empty
+    assert len(df) == 1000
+

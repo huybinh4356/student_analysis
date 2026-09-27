@@ -42,3 +42,31 @@ class DataLoader:
             raise FileNotFoundError(f"File not found: {file_path}")
         df = pd.read_excel(file_path, sheet_name="Du_Lieu_Sinh_Vien", header=1)
         return df
+
+    @staticmethod
+    def load_data(file_path: Optional[Path] = None) -> pd.DataFrame:
+        """
+        Convenience method to load student dataset.
+        Attempts loading from PostgreSQL DB first; if empty or fails, falls back to Excel.
+
+        Args:
+            file_path: Optional path to Excel file.
+
+        Returns:
+            pd.DataFrame: Loaded student DataFrame.
+        """
+        try:
+            df = DataLoader.load_from_db()
+            if not df.empty:
+                return df
+        except Exception:
+            pass
+
+        if file_path is None:
+            file_path = Path(__file__).resolve().parents[2] / "data" / "du_lieu_sinh_vien_tong_hop.xlsx"
+
+        if file_path.exists():
+            return DataLoader.load_from_excel(file_path)
+
+        return pd.DataFrame()
+
