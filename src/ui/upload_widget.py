@@ -52,7 +52,8 @@ class UploadWidget(QWidget):
 
         # Table Preview
         self.table = QTableWidget()
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        self.table.horizontalHeader().setStretchLastSection(True)
         layout.addWidget(self.table)
 
     def load_current_data(self):

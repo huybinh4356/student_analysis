@@ -111,10 +111,10 @@ class DataHealthWidget(QWidget):
         card3 = self._create_summary_card("DÒNG TRÙNG LẶP", f"{report['duplicate_rows']} dòng", "#a855f7" if report['duplicate_rows'] > 0 else "#64748b", "#3b0764" if report['duplicate_rows'] > 0 else "#1e293b")
         card4 = self._create_summary_card("CỘT BỊ KHUYẾT", f"{len(report['missing_summary'])} cột", "#f97316" if report['missing_summary'] else "#10b981", "#7c2d12" if report['missing_summary'] else "#064e3b")
 
-        cards_layout.addWidget(card1)
-        cards_layout.addWidget(card2)
-        cards_layout.addWidget(card3)
-        cards_layout.addWidget(card4)
+        cards_layout.addWidget(card1, 1)
+        cards_layout.addWidget(card2, 1)
+        cards_layout.addWidget(card3, 1)
+        cards_layout.addWidget(card4, 1)
         self.content_layout.addLayout(cards_layout)
 
         # 2. Missing Data Group
@@ -136,6 +136,7 @@ class DataHealthWidget(QWidget):
 
         # 3. Invalid Values & Outliers Row
         row_invalid = QHBoxLayout()
+        row_invalid.setSpacing(12)
         
         # Invalid values group
         group_inv = QGroupBox("Kiểm Tra Giá Trị Ngoài Khoảng (Out-of-bound Values)")
@@ -152,7 +153,7 @@ class DataHealthWidget(QWidget):
             ok_inv.setStyleSheet("color: #34d399; font-size: 12px;")
             layout_inv.addWidget(ok_inv)
         
-        row_invalid.addWidget(group_inv)
+        row_invalid.addWidget(group_inv, 1)
 
         # Outliers group
         group_out = QGroupBox("Phát Hiện Điểm Ngoại Lệ (Outliers IQR Method)")
@@ -169,7 +170,7 @@ class DataHealthWidget(QWidget):
             ok_out.setStyleSheet("color: #34d399; font-size: 12px;")
             layout_out.addWidget(ok_out)
 
-        row_invalid.addWidget(group_out)
+        row_invalid.addWidget(group_out, 1)
         self.content_layout.addLayout(row_invalid)
 
         # 4. Actionable Recommendations Group

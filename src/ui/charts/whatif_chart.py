@@ -3,7 +3,7 @@ Before vs After Comparison Bar Chart Widget for What-If Simulations.
 Uses matplotlib Qt canvas to render clean, corporate dark mode visual bar comparison.
 """
 
-from PyQt6.QtWidgets import QWidget, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QSizePolicy
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import numpy as np
@@ -22,6 +22,7 @@ class WhatIfChartWidget(QWidget):
         # Matplotlib figure dark theme setup
         self.figure = Figure(figsize=(5, 3.5), facecolor="#1e293b")
         self.canvas = FigureCanvas(self.figure)
+        self.canvas.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         layout.addWidget(self.canvas)
 
         self.ax = self.figure.add_subplot(111)
