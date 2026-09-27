@@ -47,8 +47,13 @@ class ChartWidget(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.df = DataLoader.load_from_db()
+        self.df = DataLoader.load_data()
         self.init_ui()
+
+    def reload_data(self):
+        """Reloads student dataset from PostgreSQL and updates active chart."""
+        self.df = DataLoader.load_data()
+        self.update_chart()
 
     def init_ui(self):
         layout = QVBoxLayout(self)

@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel,
     QFileDialog, QTableWidget, QTableWidgetItem, QHeaderView, QMessageBox
 )
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 
 from src.core.data_loader import DataLoader
 from src.db.ingest import ingest_excel_to_db
@@ -16,6 +16,8 @@ from src.db.ingest import ingest_excel_to_db
 
 class UploadWidget(QWidget):
     """Widget allowing lecturers to upload Excel data and preview database tables."""
+
+    data_reloaded = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -98,5 +100,6 @@ class UploadWidget(QWidget):
                 self, "Thành công", f"Đã nạp thành công {inserted:,} bản ghi sinh viên mới vào Database!"
             )
             self.load_current_data()
+            self.data_reloaded.emit()
         except Exception as e:
             QMessageBox.critical(self, "Lỗi Nạp Dữ liệu", f"Không thể nạp dữ liệu: {str(e)}")

@@ -93,6 +93,10 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.whatif_page)
         self.stacked_widget.addWidget(self.report_page)
 
+        # Connect data upload signal to trigger app-wide refresh
+        if hasattr(self.data_page, "upload_widget"):
+            self.data_page.upload_widget.data_reloaded.connect(self.on_data_reloaded)
+
         main_layout.addWidget(self.stacked_widget, stretch=1)
 
         # 3. Status Bar
@@ -100,6 +104,33 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage("Hệ thống Phân tích Kết quả Học tập v2.0 — CSDL PostgreSQL đã kết nối thành công.")
 
         self.switch_page(0)
+
+    def on_data_reloaded(self):
+        """Refreshes all pages in the application whenever a new dataset is uploaded into PostgreSQL."""
+        try:
+            # 1. Refresh Data Health page
+            if hasattr(self.data_page, "health_widget"):
+                self.data_page.health_widget.load_data()
+
+            # 2. Refresh Chart page
+            if hasattr(self.chart_page, "reload_data"):
+                self.chart_page.reload_data()
+
+            # 3. Retrain/Refresh ML Analysis page
+            if hasattr(self.analysis_page, "train_all_models"):
+                self.analysis_page.train_all_models()
+
+            # 4. Refresh Diagnosis page student list
+            if hasattr(self.diagnosis_page, "load_student_list"):
+                self.diagnosis_page.load_student_list()
+
+            # 5. Refresh What-If page student list
+            if hasattr(self.whatif_page, "load_student_data"):
+                self.whatif_page.load_student_data()
+
+            self.statusBar().showMessage("Đã đồng bộ và phân tích lại toàn bộ CSDL sinh viên mới!")
+        except Exception:
+            pass
 
     def switch_page(self, index: int):
         """Switches the active page in QStackedWidget."""
