@@ -9,12 +9,14 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
 
 from src.core.schema_detector import SchemaDetector
 
 
 class DataPreprocessor:
-    """Handles train/test splitting, categorical encoding, and numerical scaling."""
+    """Handles train/test splitting, categorical encoding, missing imputation, and numerical scaling."""
 
     def __init__(self, test_size: float = 0.2, random_state: int = 42):
         self.test_size = test_size
@@ -43,12 +45,17 @@ class DataPreprocessor:
         feature_cols = [c for c in df.columns if c not in exclude_cols]
 
         X = df[feature_cols].copy()
-        y_reg = df[SchemaDetector.TARGET_REGRESSION].copy()
         
+        y_reg = df[SchemaDetector.TARGET_REGRESSION].copy()
+        if y_reg.isna().any():
+            y_reg = y_reg.fillna(y_reg.median() if not y_reg.empty else 5.0)
+
         # Ordinal encode classification target (1: Rất thấp, 2: Thấp, 3: Trung bình, 4: Cao)
         y_cls = df[SchemaDetector.TARGET_CLASSIFICATION].map(
             self.ordinal_mappings["nguy_co_hoc_vu"]
         ).copy()
+        if y_cls.isna().any():
+            y_cls = y_cls.fillna(2)
 
         return X, y_reg, y_cls
 
@@ -95,8 +102,8 @@ class DataPreprocessor:
         self, X_train: pd.DataFrame, X_test: pd.DataFrame
     ) -> Tuple[np.ndarray, np.ndarray, List[str]]:
         """
-        Encodes categorical features and scales numerical features.
-        Fits transformer ONLY on X_train.
+        Encodes categorical features, imputes missing values, and scales numerical features.
+        Fits transformer ONLY on X_train (R-DATA-04).
 
         Args:
             X_train: Training features.
@@ -118,10 +125,20 @@ class DataPreprocessor:
         num_cols = [c for c in X_tr.columns if c not in self.nominal_cols]
         nom_cols = [c for c in X_tr.columns if c in self.nominal_cols]
 
+        num_pipeline = Pipeline([
+            ("imputer", SimpleImputer(strategy="median")),
+            ("scaler", StandardScaler()),
+        ])
+
+        nom_pipeline = Pipeline([
+            ("imputer", SimpleImputer(strategy="most_frequent")),
+            ("nom", OneHotEncoder(drop="first", sparse_output=False, handle_unknown="ignore")),
+        ])
+
         self.column_transformer = ColumnTransformer(
             transformers=[
-                ("num", StandardScaler(), num_cols),
-                ("nom", OneHotEncoder(drop="first", sparse_output=False, handle_unknown="ignore"), nom_cols),
+                ("num", num_pipeline, num_cols),
+                ("nom", nom_pipeline, nom_cols),
             ]
         )
 
@@ -130,9 +147,11 @@ class DataPreprocessor:
         X_test_transformed = self.column_transformer.transform(X_te)
 
         # Extract generated feature names
-        nom_encoder = self.column_transformer.named_transformers_["nom"]
+        nom_encoder = self.column_transformer.named_transformers_["nom"].named_steps["nom"]
         nom_feature_names = nom_encoder.get_feature_names_out(nom_cols).tolist() if nom_cols else []
         self.encoded_feature_names = num_cols + nom_feature_names
+
+        return X_train_transformed, X_test_transformed, self.encoded_feature_names
 
         return X_train_transformed, X_test_transformed, self.encoded_feature_names
 
