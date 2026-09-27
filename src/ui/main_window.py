@@ -11,9 +11,11 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 
 from src.ui.upload_widget import UploadWidget
+from src.ui.data_health_widget import DataHealthWidget
 from src.ui.chart_widget import ChartWidget
 from src.ui.analysis_widget import AnalysisWidget
-from src.ui.insight_widget import InsightWidget
+from src.ui.diagnosis_widget import DiagnosisWidget
+from src.ui.whatif_widget import WhatIfWidget
 from src.ui.report_widget import ReportWidget
 
 
@@ -22,8 +24,8 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Hệ thống Phân tích & Dự đoán Kết quả Học tập Sinh viên")
-        self.resize(1300, 820)
+        self.setWindowTitle("Hệ thống Phân tích & Dự đoán Kết quả Học tập Sinh viên v2.0")
+        self.resize(1350, 850)
         self.init_ui()
         self.load_stylesheet()
 
@@ -41,22 +43,24 @@ class MainWindow(QMainWindow):
         sidebar_layout = QVBoxLayout(sidebar)
         sidebar_layout.setContentsMargins(0, 0, 0, 0)
 
-        app_title = QLabel("QUẢN LÝ & DỰ BÁO HỌC VỤ")
+        app_title = QLabel("QUẢN LÝ & DỰ BÁO HỌC VỤ v2.0")
         app_title.setObjectName("appTitle")
         sidebar_layout.addWidget(app_title)
 
-        # Navigation Buttons (Clean of all emojis)
-        self.btn_upload = QPushButton("1. Dữ liệu & Ingest")
-        self.btn_charts = QPushButton("2. Tùy chọn Biểu đồ EDA")
-        self.btn_analysis = QPushButton("3. Dự báo & Huấn luyện ML")
-        self.btn_insights = QPushButton("4. Tư vấn Can thiệp & What-If")
-        self.btn_reports = QPushButton("5. Xuất Báo cáo Tổng hợp")
+        # Navigation Buttons (Clean corporate design)
+        self.btn_data_health = QPushButton("1. Sức Khỏe Dữ Liệu Dataset")
+        self.btn_charts = QPushButton("2. Tùy Chọn Biểu Đồ EDA")
+        self.btn_analysis = QPushButton("3. Dự Báo ML & Nguy Cơ")
+        self.btn_diagnosis = QPushButton("4. Chẩn Đoán & Missing Data")
+        self.btn_whatif = QPushButton("5. Mô Phỏng What-If v2.0")
+        self.btn_reports = QPushButton("6. Xuất Báo Cáo Tổng Hợp")
 
         self.nav_buttons = [
-            self.btn_upload,
+            self.btn_data_health,
             self.btn_charts,
             self.btn_analysis,
-            self.btn_insights,
+            self.btn_diagnosis,
+            self.btn_whatif,
             self.btn_reports,
         ]
 
@@ -67,7 +71,7 @@ class MainWindow(QMainWindow):
 
         sidebar_layout.addStretch()
 
-        footer_label = QLabel("Phiên bản 1.0.0 | Offline System")
+        footer_label = QLabel("Phiên bản v2.0 | Offline System")
         footer_label.setStyleSheet("color: #64748b; font-size: 11px; padding: 12px;")
         sidebar_layout.addWidget(footer_label)
 
@@ -76,23 +80,25 @@ class MainWindow(QMainWindow):
         # 2. Main Content Area (StackedWidget)
         self.stacked_widget = QStackedWidget()
 
-        self.upload_page = UploadWidget()
+        self.data_health_page = DataHealthWidget()
         self.chart_page = ChartWidget()
         self.analysis_page = AnalysisWidget()
-        self.insight_page = InsightWidget()
+        self.diagnosis_page = DiagnosisWidget()
+        self.whatif_page = WhatIfWidget()
         self.report_page = ReportWidget()
 
-        self.stacked_widget.addWidget(self.upload_page)
+        self.stacked_widget.addWidget(self.data_health_page)
         self.stacked_widget.addWidget(self.chart_page)
         self.stacked_widget.addWidget(self.analysis_page)
-        self.stacked_widget.addWidget(self.insight_page)
+        self.stacked_widget.addWidget(self.diagnosis_page)
+        self.stacked_widget.addWidget(self.whatif_page)
         self.stacked_widget.addWidget(self.report_page)
 
         main_layout.addWidget(self.stacked_widget, stretch=1)
 
         # 3. Status Bar
         self.setStatusBar(QStatusBar())
-        self.statusBar().showMessage("Hệ thống Phân tích Kết quả Học tập — Cơ sở dữ liệu PostgreSQL đã kết nối.")
+        self.statusBar().showMessage("Hệ thống Phân tích Kết quả Học tập v2.0 — CSDL PostgreSQL đã kết nối thành công.")
 
         self.switch_page(0)
 
@@ -109,3 +115,4 @@ class MainWindow(QMainWindow):
         if qss_path.exists():
             with open(qss_path, "r", encoding="utf-8") as f:
                 self.setStyleSheet(f.read())
+
