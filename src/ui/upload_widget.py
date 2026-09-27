@@ -89,9 +89,9 @@ class UploadWidget(QWidget):
             return
 
         try:
-            inserted = ingest_excel_to_db(Path(file_path))
+            inserted = ingest_excel_to_db(Path(file_path), force=True)
             QMessageBox.information(
-                self, "Thành công", f"Đã nạp thành công {inserted:,} bản ghi sinh viên vào Database!"
+                self, "Thành công", f"Đã nạp thành công {inserted:,} bản ghi sinh viên mới vào Database!"
             )
             self.load_current_data()
         except Exception as e:

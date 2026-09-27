@@ -97,8 +97,14 @@ def ingest_excel_to_db(file_path: Path, force: bool = False) -> int:
     if not file_path.exists():
         raise FileNotFoundError(f"Excel file not found at path: {file_path}")
 
-    # Read sheet with header at index 1
-    df = pd.read_excel(file_path, sheet_name="Du_Lieu_Sinh_Vien", header=1)
+    # Flexible sheet reading (supports 'Du_Lieu_Sinh_Vien' or first sheet, header 0 or 1)
+    excel_file = pd.ExcelFile(file_path)
+    sheet_name = "Du_Lieu_Sinh_Vien" if "Du_Lieu_Sinh_Vien" in excel_file.sheet_names else 0
+
+    df = pd.read_excel(file_path, sheet_name=sheet_name, header=1)
+    if "Mã SV" not in df.columns and "ma_sv" not in df.columns:
+        df = pd.read_excel(file_path, sheet_name=sheet_name, header=0)
+
     if df.empty:
         raise ValueError("Excel file is empty")
 
