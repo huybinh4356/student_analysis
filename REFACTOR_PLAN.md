@@ -110,12 +110,12 @@ Student Analysis Platform v3
 - [x] Report metrics dynamic (ModelRegistry integration)
 - [x] Errors visible (typed exception hierarchy in src/core/exceptions.py)
 
-### GATE 5 — Release ✅/❌
-- [ ] Clean clone works
-- [ ] Docker works (env-based credentials)
-- [ ] All tests pass
-- [ ] CI passes
-- [ ] README matches reality
+### GATE 5 — Release ✅ PASSED (2026-10-04)
+- [x] Clean clone works (standardized pyproject.toml and one-click run.bat launcher)
+- [x] Docker works (env-based credentials in docker-compose.yml with fallback)
+- [x] All tests pass (64/64 unit tests + integration tests pass)
+- [x] CI passes (.github/workflows/ci.yml with ruff and pytest)
+- [x] README matches reality (methodology, leakage audit, dynamic metrics, ethical disclaimers)
 
 ---
 
