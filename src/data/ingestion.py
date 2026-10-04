@@ -196,6 +196,7 @@ def ingest_file(
 
     # ── Transactional insert ───────────────────────────────────────────────
     try:
+        session.query(Student).delete()
         records = df.where(pd.notnull(df), None).to_dict(orient="records")
         students = [Student(**{k: v for k, v in r.items() if hasattr(Student, k)}) for r in records]
 

@@ -33,23 +33,8 @@ class InsightEngine:
             models_dir = Path(__file__).resolve().parents[2] / "models"
         
         self.models_dir = models_dir
-        self.preprocessor: Optional[DataPreprocessor] = None
-        self.reg_model = None
-        self.cls_model = None
-        self._load_artifacts()
-
-    def _load_artifacts(self):
-        """Loads trained ML models and preprocessor from disk."""
-        preprocessor_path = self.models_dir / "preprocessor.pkl"
-        reg_path = self.models_dir / "ridge_regression_model.pkl"
-        cls_path = self.models_dir / "risk_classifier_model.pkl"
-
-        if preprocessor_path.exists():
-            self.preprocessor = joblib.load(preprocessor_path)
-        if reg_path.exists():
-            self.reg_model = joblib.load(reg_path)
-        if cls_path.exists():
-            self.cls_model = joblib.load(cls_path)
+        from src.services.prediction_service import PredictionService
+        self.pred_service = PredictionService(models_dir=self.models_dir)
 
     def generate_student_advice(self, student_row: Dict[str, Any]) -> Dict[str, Any]:
         """

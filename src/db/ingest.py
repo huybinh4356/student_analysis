@@ -120,23 +120,24 @@ def ingest_excel_to_db(file_path: Path, force: bool = False) -> int:
     df_renamed = df.rename(columns=column_mapping)
     cleaned_df = clean_and_impute_data(df_renamed)
 
-    # Re-create database schema
-    Base.metadata.drop_all(bind=engine)
+    # Ensure schema exists without dropping tables (DB-001)
     Base.metadata.create_all(bind=engine)
 
     # Convert DataFrame to list of dicts, setting all nulls/NaN to None for SQL NULL
     records = cleaned_df.where(pd.notnull(cleaned_df), None).to_dict(orient="records")
-    students = [Student(**r) for r in records]
+    students = [Student(**{k: v for k, v in r.items() if hasattr(Student, k)}) for r in records]
 
     db: Session = SessionLocal()
     try:
+        # Transactional replacement: delete and insert within the same transaction (DB-003)
+        db.query(Student).delete()
         db.bulk_save_objects(students)
         db.commit()
         inserted_count = db.query(Student).count()
         return inserted_count
     except Exception as e:
         db.rollback()
-        raise RuntimeError(f"Database insertion failed: {str(e)}") from e
+        raise RuntimeError(f"Database insertion failed (transaction rolled back): {str(e)}") from e
     finally:
         db.close()
 

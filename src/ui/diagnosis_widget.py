@@ -7,25 +7,26 @@ Complies strictly with R-ETH-01 (uses "có nguy cơ", never "sẽ rớt").
 
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QGroupBox,
-    QProgressBar, QScrollArea, QFrame, QPushButton
+    QProgressBar, QScrollArea, QFrame, QPushButton, QGridLayout
 )
 from PyQt6.QtCore import Qt
 import pandas as pd
 
 from src.core.missing_detector import MissingDetector, MissingField
-from src.core.whatif_engine import WhatIfEngine
+from src.services.prediction_service import PredictionService, StudentPrediction
 from src.core.data_loader import DataLoader
 
 
 class DiagnosisWidget(QWidget):
     """
     Panel widget for diagnosing individual student data health and prediction confidence.
+    Uses central PredictionService for calibrated risk estimation and data completeness.
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.missing_detector = MissingDetector()
-        self.whatif_engine = WhatIfEngine()
+        self.prediction_service = PredictionService()
         self.students_df = pd.DataFrame()
         self.current_student = {}
 
@@ -125,11 +126,30 @@ class DiagnosisWidget(QWidget):
                 item.widget().deleteLater()
 
         st = self.current_student
-        predicted_score = self.whatif_engine.predict_score(st)
-        risk_label, risk_color = self.whatif_engine.predict_risk(predicted_score, student_data=st)
+        try:
+            pred = self.prediction_service.predict_student(st)
+            predicted_score = pred.predicted_score
+            risk_label = pred.risk_label
+            risk_color = pred.risk_color
+            reliability = pred.reliability_score
+            probabilities = pred.probabilities
+        except Exception:
+            predicted_score = 5.0
+            risk_label = "Chưa có mô hình"
+            risk_color = "#64748b"
+            reliability = 50.0
+            probabilities = {}
 
         missing_fields = self.missing_detector.detect_for_student(st)
-        confidence = self.missing_detector.calculate_confidence_penalty(missing_fields)
+
+        # Check for actual target if available in dataset (DG-002: distinguish actual vs predicted)
+        actual_val = st.get("diem_tong_ket")
+        actual_str = ""
+        if actual_val is not None and not pd.isna(actual_val) and str(actual_val).strip() != "":
+            try:
+                actual_str = f" | Điểm thực tế: <b style='color: #38bdf8; font-size: 14px;'>{float(actual_val):.2f} điểm</b>"
+            except Exception:
+                pass
 
         # 1. Student Profile Summary Card
         card_profile = QFrame()
@@ -140,7 +160,7 @@ class DiagnosisWidget(QWidget):
             <div style='color: #f8fafc; font-size: 14px;'>
                 <b style='font-size: 16px;'>{st.get('ho_ten', 'N/A')}</b> (Mã SV: <span style='color: #38bdf8;'>{st.get('ma_sv', 'N/A')}</span>)<br>
                 <span>Ngành: <b>{st.get('nganh_hoc', 'N/A')}</b> | Quê quán: {st.get('que_quan', 'N/A')}</span><br>
-                <span>Điểm dự đoán tổng kết: <b style='color: #f59e0b; font-size: 15px;'>{predicted_score:.2f} điểm</b></span>
+                <span>Điểm dự báo: <b style='color: #f59e0b; font-size: 15px;'>{predicted_score:.2f} điểm</b>{actual_str}</span>
             </div>
         """
         lbl_info = QLabel(info_text)
@@ -148,25 +168,25 @@ class DiagnosisWidget(QWidget):
         layout_prof.addStretch()
 
         # Risk badge
-        lbl_risk = QLabel(f"Mức nguy cơ: {risk_label}")
+        lbl_risk = QLabel(f"Mức nguy cơ dự báo: {risk_label}")
         lbl_risk.setStyleSheet(f"background-color: {risk_color}; color: white; font-weight: bold; font-size: 13px; padding: 8px 16px; border-radius: 6px;")
         layout_prof.addWidget(lbl_risk)
 
         self.content_layout.addWidget(card_profile)
 
-        # 2. Prediction Confidence Score Bar
-        group_conf = QGroupBox("ĐỘ TIN CẬY DỰ ĐOÁN (PREDICTION CONFIDENCE SCORE)")
+        # 2. Prediction Reliability & Probability Breakdown (PRED-004, DG-004)
+        group_conf = QGroupBox("ĐỘ ĐẦY ĐỦ DỮ LIỆU & XÁC SUẤT NGUY CƠ (RELIABILITY & PROBABILITIES)")
         group_conf.setStyleSheet("QGroupBox { font-weight: bold; color: #f8fafc; border: 1px solid #334155; border-radius: 8px; margin-top: 8px; padding-top: 16px; background-color: #1e293b; } QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 4px; }")
         layout_conf = QVBoxLayout(group_conf)
 
         conf_bar = QProgressBar()
-        conf_bar.setValue(int(confidence))
-        conf_bar.setFormat(f"Độ tin cậy: {confidence:.1f}%")
+        conf_bar.setValue(int(reliability))
+        conf_bar.setFormat(f"Độ đầy đủ dữ liệu: {reliability:.1f}%")
         conf_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        if confidence >= 80:
+        if reliability >= 85:
             bar_color = "#10b981"
-        elif confidence >= 60:
+        elif reliability >= 60:
             bar_color = "#f59e0b"
         else:
             bar_color = "#ef4444"
@@ -188,8 +208,18 @@ class DiagnosisWidget(QWidget):
         """)
         layout_conf.addWidget(conf_bar)
 
-        if confidence < 100:
-            lbl_conf_note = QLabel(f"• Độ tin cậy giảm {100 - confidence:.1f}% do thiếu hoặc suy giảm các chỉ số dữ liệu đầu vào.")
+        # Probability distribution pills if available
+        if probabilities:
+            prob_box = QHBoxLayout()
+            for r_cls, r_prob in probabilities.items():
+                p_lbl = QLabel(f"{r_cls}: {r_prob * 100:.1f}%")
+                p_lbl.setStyleSheet("background-color: #0f172a; color: #cbd5e1; padding: 4px 10px; border-radius: 4px; border: 1px solid #334155; font-size: 12px;")
+                prob_box.addWidget(p_lbl)
+            prob_box.addStretch()
+            layout_conf.addLayout(prob_box)
+
+        if reliability < 100:
+            lbl_conf_note = QLabel(f"• Dữ liệu thiếu hụt {100 - reliability:.1f}% trường thông tin quan trọng. Cần bổ sung để tăng độ tin cậy.")
             lbl_conf_note.setStyleSheet("color: #cbd5e1; font-size: 12px; margin-top: 4px;")
             layout_conf.addWidget(lbl_conf_note)
 

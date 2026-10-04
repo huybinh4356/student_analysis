@@ -108,24 +108,48 @@ class ReportWidget(QWidget):
                 html += f"<li>Tỷ lệ Chuyên cần Trung bình: <b>{df['chuyen_can'].mean():.2f}%</b></li>"
                 html += f"<li>Điểm Tổng kết Thực tế TB: <b>{df['diem_tong_ket'].mean():.2f} điểm</b></li></ul>"
 
-            # Section 2: ML Model Metrics (Dynamic from ModelRegistry)
+            # Section 2: ML Model Metrics (Dynamic from ModelRegistry - REPORT-001)
             if self.chk_models.isChecked():
                 from src.core.model_registry import ModelRegistry
                 reg_data = ModelRegistry().get_registry_data()
                 reg_info = reg_data.get("regression", {})
                 cls_info = reg_data.get("classification", {})
 
-                reg_name = reg_info.get("model_name", "Lasso Regression")
-                reg_test = reg_info.get("test_metrics", {})
-                reg_cv = reg_info.get("cv_metrics", {})
-
-                cls_name = cls_info.get("model_name", "XGBoost Classifier")
-                cls_test = cls_info.get("test_metrics", {})
-                cls_cv = cls_info.get("cv_metrics", {})
-
                 html += "<h3 style='color: #48cae4; border-bottom: 1px solid #3a506b; padding-bottom: 4px;'>2. Bảng Hiệu năng Mô hình Machine Learning (Thực tế)</h3>"
-                html += f"<p>• <b>Mô hình Hồi quy Điểm số ({reg_name})</b>: 5-Fold CV R² = <b>{reg_cv.get('cv_r2_mean', 0.9366)*100:.1f}%</b>, Test R² = <b>{reg_test.get('r2', 0.9431)*100:.1f}%</b>, MAE = <b>±{reg_test.get('mae', 0.2633):.2f} điểm</b>, RMSE = <b>{reg_test.get('rmse', 0.3317):.2f}</b>.</p>"
-                html += f"<p>• <b>Mô hình Phân loại Rủi ro ({cls_name})</b>: 5-Fold CV Macro F1 = <b>{cls_cv.get('cv_f1_macro_mean', 0.9573):.3f}</b>, Test Accuracy = <b>{cls_test.get('accuracy', 0.98)*100:.1f}%</b>, Test F1-Macro = <b>{cls_test.get('f1_macro', 0.9724):.3f}</b>, Recall Nhóm Nguy cơ Cao = <b>{cls_test.get('recall_high_risk', 0.9091)*100:.1f}%</b>.</p>"
+
+                # Regression metrics
+                if reg_info and "cv_metrics" in reg_info and "test_metrics" in reg_info:
+                    reg_name = reg_info.get("model_name", "Regression Model")
+                    reg_test = reg_info.get("test_metrics", {})
+                    reg_cv = reg_info.get("cv_metrics", {})
+                    cv_r2 = reg_cv.get("cv_r2_mean")
+                    test_r2 = reg_test.get("r2")
+                    test_mae = reg_test.get("mae")
+                    test_rmse = reg_test.get("rmse")
+
+                    if cv_r2 is not None and test_r2 is not None:
+                        html += f"<p>• <b>Mô hình Hồi quy Điểm số ({reg_name})</b>: 5-Fold CV R² = <b>{cv_r2*100:.2f}%</b>, Test R² = <b>{test_r2*100:.2f}%</b>, Test MAE = <b>±{test_mae:.2f} điểm</b>, Test RMSE = <b>{test_rmse:.2f}</b>.</p>"
+                    else:
+                        html += "<p style='color: #fbbf24;'>• <i>Chưa có đầy đủ kết quả đánh giá mô hình Hồi quy từ artifact.</i></p>"
+                else:
+                    html += "<p style='color: #fbbf24;'>• <i>Chưa có kết quả đánh giá mô hình Hồi quy. Vui lòng thực hiện Huấn luyện Mô hình.</i></p>"
+
+                # Classification metrics
+                if cls_info and "cv_metrics" in cls_info and "test_metrics" in cls_info:
+                    cls_name = cls_info.get("model_name", "Classifier Model")
+                    cls_test = cls_info.get("test_metrics", {})
+                    cls_cv = cls_info.get("cv_metrics", {})
+                    cv_f1 = cls_cv.get("cv_f1_macro_mean")
+                    test_acc = cls_test.get("accuracy")
+                    test_f1 = cls_test.get("f1_macro")
+                    recall_high = cls_test.get("recall_high_risk")
+
+                    if cv_f1 is not None and test_acc is not None:
+                        html += f"<p>• <b>Mô hình Phân loại Rủi ro ({cls_name})</b>: 5-Fold CV Macro F1 = <b>{cv_f1:.3f}</b>, Test Accuracy = <b>{test_acc*100:.1f}%</b>, Test Macro F1 = <b>{test_f1:.3f}</b>, Recall Nhóm Nguy cơ Cao = <b>{recall_high*100:.1f}%</b>.</p>"
+                    else:
+                        html += "<p style='color: #fbbf24;'>• <i>Chưa có đầy đủ kết quả đánh giá mô hình Phân loại từ artifact.</i></p>"
+                else:
+                    html += "<p style='color: #fbbf24;'>• <i>Chưa có kết quả đánh giá mô hình Phân loại. Vui lòng thực hiện Huấn luyện Mô hình.</i></p>"
 
             # Section 3: High Risk Student List
             if self.chk_high_risk.isChecked():

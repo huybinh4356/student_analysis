@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QTimer
 import pandas as pd
 
-from src.core.whatif_engine import WhatIfEngine
+from src.services.whatif_service import WhatIfService
 from src.core.scenario_manager import ScenarioManager
 from src.core.data_loader import DataLoader
 from src.ui.charts.whatif_chart import WhatIfChartWidget
@@ -24,12 +24,12 @@ from src.ui.charts.sensitivity_chart import SensitivityChartWidget
 
 class WhatIfWidget(QWidget):
     """
-    Upgraded What-If simulation panel widget.
+    Upgraded What-If simulation panel widget using WhatIfService.
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.engine = WhatIfEngine()
+        self.engine = WhatIfService()
         self.scenario_manager = ScenarioManager()
         self.students_df = pd.DataFrame()
         self.current_student = {}
@@ -136,7 +136,7 @@ class WhatIfWidget(QWidget):
         sliders_layout = QVBoxLayout(sliders_container)
         sliders_layout.setSpacing(12)
 
-        for feat in WhatIfEngine.SLIDER_FEATURES:
+        for feat in WhatIfService.SLIDER_FEATURES:
             key = feat["key"]
             name = feat["name"]
             min_val = feat["min"]

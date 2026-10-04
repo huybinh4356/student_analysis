@@ -12,8 +12,10 @@ from PyQt6.QtCore import Qt, pyqtSignal
 
 import pandas as pd
 from src.core.data_loader import DataLoader
-from src.db.ingest import ingest_excel_to_db
-from src.core.exceptions import DataValidationError, IngestionError
+from src.data.ingestion import ingest_file, parse_excel
+from src.data.validator import DataValidator
+from src.db.connection import SessionLocal, Base, engine
+from src.core.exceptions import DataValidationError, IngestionError, SchemaError
 
 
 class UploadWidget(QWidget):
@@ -97,7 +99,7 @@ class UploadWidget(QWidget):
             self.lbl_status.setText(f"Lỗi tải dữ liệu: {str(e)}")
 
     def handle_upload(self):
-        """Handles Excel file selection and database ingestion."""
+        """Handles Excel file selection and transactional ingestion pipeline (DB-002, DB-003)."""
         file_path, _ = QFileDialog.getOpenFileName(
             self, "Chọn file Excel Dữ liệu Sinh viên", "", "Excel Files (*.xlsx *.xls)"
         )
@@ -106,11 +108,48 @@ class UploadWidget(QWidget):
             return
 
         try:
-            inserted = ingest_excel_to_db(Path(file_path), force=True)
-            QMessageBox.information(
-                self, "Thành công", f"Đã nạp thành công {inserted:,} bản ghi sinh viên mới vào Database!"
-            )
+            path_obj = Path(file_path)
+            # Step 1: Pre-validation of file
+            df_preview = parse_excel(path_obj)
+            val_result = DataValidator.validate(df_preview)
+
+            if not val_result.is_valid:
+                QMessageBox.critical(
+                    self, "Kiểm tra Dữ liệu Thất bại",
+                    f"Dữ liệu không hợp lệ ({val_result.error_count} lỗi). Cơ sở dữ liệu không bị thay đổi.\n\n"
+                    f"{val_result.summary()}"
+                )
+                return
+
+            # Step 2: Ingest into Database transactionally
+            session = SessionLocal()
+            try:
+                Base.metadata.create_all(bind=engine)
+                ingest_res = ingest_file(path_obj, session)
+                inserted = ingest_res.rows_inserted
+                warn_text = ""
+                if ingest_res.warnings:
+                    warn_text = f"\n\nLưu ý cảnh báo ({len(ingest_res.warnings)}): " + "; ".join(ingest_res.warnings[:3])
+
+                QMessageBox.information(
+                    self, "Thành công",
+                    f"Đã kiểm tra và nạp thành công {inserted:,} bản ghi sinh viên vào Database!{warn_text}"
+                )
+            except Exception as dbe:
+                # If database is offline, fallback to updating local offline view
+                session.rollback()
+                DataLoader.clear_cache()
+                QMessageBox.warning(
+                    self, "Database Offline",
+                    f"Dữ liệu Excel hợp lệ ({len(df_preview):,} dòng) nhưng không kết nối được PostgreSQL:\n{dbe}\n"
+                    "Hệ thống sẽ chạy ở chế độ Dữ liệu Offline (Excel)."
+                )
+            finally:
+                session.close()
+
+            DataLoader.clear_cache()
             self.load_current_data()
             self.data_reloaded.emit()
+
         except Exception as e:
-            QMessageBox.critical(self, "Lỗi Nạp Dữ liệu", f"Không thể nạp dữ liệu: {str(e)}")
+            QMessageBox.critical(self, "Lỗi Nạp Dữ liệu", f"Không thể xử lý file: {str(e)}")
