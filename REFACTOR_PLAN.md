@@ -97,18 +97,18 @@ Student Analysis Platform v3
 - [x] Best model selected from CV only (Regression: Lasso by CV R²=0.9366; Classification: XGBoost by CV Macro F1=0.9573)
 - [x] Metrics persisted to metrics.json and models/registry.json
 
-### GATE 3 — Prediction ✅/❌
-- [ ] One PredictionService (single entry point)
-- [ ] Diagnosis uses PredictionService
-- [ ] What-If uses WhatIfService → PredictionService
-- [ ] Report uses dynamic metrics from registry
-- [ ] No fallback fake model anywhere
+### GATE 3 — Prediction ✅ PASSED (2026-10-04)
+- [x] One PredictionService (single entry point: src/services/prediction_service.py)
+- [x] Diagnosis uses PredictionService
+- [x] What-If uses WhatIfService → PredictionService
+- [x] Report uses dynamic metrics from registry
+- [x] No fallback fake model anywhere (removed 0.4*GK + 0.3*Quiz formula)
 
-### GATE 4 — Product ✅/❌
-- [ ] Upload safe (no drop_all, transactional)
-- [ ] Training non-blocking (QThread)
-- [ ] Report metrics dynamic
-- [ ] Errors visible (no silent except: pass)
+### GATE 4 — Product ✅ PASSED (2026-10-04)
+- [x] Upload safe (no drop_all, transactional delete/insert)
+- [x] Training non-blocking (QThread TrainingWorker in AnalysisWidget)
+- [x] Report metrics dynamic (ModelRegistry integration)
+- [x] Errors visible (typed exception hierarchy in src/core/exceptions.py)
 
 ### GATE 5 — Release ✅/❌
 - [ ] Clean clone works
