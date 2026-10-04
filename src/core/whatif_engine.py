@@ -103,9 +103,9 @@ class WhatIfEngine:
                 "label": it.feature_label_vi,
                 "delta": it.score_impact,
                 "impact": it.score_impact,
-                "stars": "⭐" * max(1, min(5, int(abs(it.score_impact) * 5 + 1))),
+                "stars": "*" * max(1, min(5, int(abs(it.score_impact) * 5 + 1))),
                 "effect_per_unit": it.effect_per_unit,
-                "display": f"{it.unit_step} → {'+' if it.score_impact >= 0 else ''}{it.score_impact:.2f} điểm",
+                "display": f"{it.unit_step} -> {'+' if it.score_impact >= 0 else ''}{it.score_impact:.2f} điểm",
                 "impact_type": "Tích cực" if it.score_impact >= 0 else "Tiêu cực",
             })
         return results
@@ -167,13 +167,13 @@ class WhatIfEngine:
         advice_lines = []
 
         if delta > 0.5:
-            advice_lines.append(f"🟢 **Tác động rất tích cực (+{delta:.2f} điểm):** Kịch bản điều chỉnh giúp sinh viên nâng hạng học lực rõ rệt.")
+            advice_lines.append(f"**[Tác động rất tích cực (+{delta:.2f} điểm)]:** Kịch bản điều chỉnh giúp sinh viên nâng hạng học lực rõ rệt.")
         elif delta > 0:
-            advice_lines.append(f"🔵 **Tác động tích cực nhẹ (+{delta:.2f} điểm):** Cải thiện một phần điểm số dự báo.")
+            advice_lines.append(f"**[Tác động tích cực (+{delta:.2f} điểm)]:** Cải thiện một phần điểm số dự báo.")
         elif delta < -0.05:
-            advice_lines.append(f"🔴 **Cảnh báo suy giảm ({delta:.2f} điểm):** Thay đổi này làm giảm kết quả dự báo.")
+            advice_lines.append(f"**[Cảnh báo suy giảm ({delta:.2f} điểm)]:** Thay đổi này làm giảm kết quả dự báo.")
         else:
-            advice_lines.append("⚪ **Không thay đổi:** Các chỉ số điều chỉnh chưa đủ tạo sự khác biệt.")
+            advice_lines.append("**[Không thay đổi]:** Các chỉ số điều chỉnh chưa đủ tạo sự khác biệt.")
 
         # Pillar recommendations
         if "chuyen_can" in changes and changes["chuyen_can"] > student_data.get("chuyen_can", 80):

@@ -164,7 +164,7 @@ class ModelTrainer:
         }
 
         # Add Test metrics to summary table for reporting
-        summary_df["Selected"] = summary_df["Model"].apply(lambda m: "★ Best" if m == best_name else "")
+        summary_df["Selected"] = summary_df["Model"].apply(lambda m: "[Best]" if m == best_name else "")
         summary_df.loc[summary_df["Model"] == best_name, "Test R²"] = round(test_r2, 4)
         summary_df.loc[summary_df["Model"] == best_name, "Test RMSE"] = round(test_rmse, 4)
         summary_df.loc[summary_df["Model"] == best_name, "Test MAE"] = round(test_mae, 4)
@@ -312,7 +312,7 @@ class ModelTrainer:
         }
 
         # Add Test metrics to summary table
-        summary_df["Selected"] = summary_df["Model"].apply(lambda m: "★ Best" if m == best_name else "")
+        summary_df["Selected"] = summary_df["Model"].apply(lambda m: "[Best]" if m == best_name else "")
         summary_df.loc[summary_df["Model"] == best_name, "Test Accuracy"] = round(test_acc, 4)
         summary_df.loc[summary_df["Model"] == best_name, "Test F1-Macro"] = round(test_f1_macro, 4)
         summary_df.loc[summary_df["Model"] == best_name, "Recall High-Risk"] = round(recall_high_risk, 4)

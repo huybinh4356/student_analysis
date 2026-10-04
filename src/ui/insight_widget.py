@@ -190,9 +190,9 @@ class InsightWidget(QWidget):
 
             sim_html = "<div style='font-family: Segoe UI, sans-serif;'>"
             sim_html += "<b>KẾT QUẢ MÔ PHỎNG GIẢ ĐỊNH DỰ BÁO:</b><br><br>"
-            sim_html += f"• Điểm tổng kết ban đầu: <b>{res['diem_cu']} điểm</b> ➔ Điểm dự báo mới: <b style='color:#5bc0be;'>{res['diem_moi']} điểm</b> "
+            sim_html += f"• Điểm tổng kết ban đầu: <b>{res['diem_cu']} điểm</b> -> Điểm dự báo mới: <b style='color:#5bc0be;'>{res['diem_moi']} điểm</b> "
             sim_html += f"(Mức tăng: <b style='color:#48cae4;'>+{res['chenh_lech_diem']} điểm</b>)<br>"
-            sim_html += f"• Mức nguy cơ ban đầu: <b>{res['nguy_co_cu']}</b> ➔ Mức nguy cơ mới: <b style='color:#48cae4;'>{res['nguy_co_moi']}</b><br>"
+            sim_html += f"• Mức nguy cơ ban đầu: <b>{res['nguy_co_cu']}</b> -> Mức nguy cơ mới: <b style='color:#48cae4;'>{res['nguy_co_moi']}</b><br>"
 
             if res['cai_thien_nguy_co']:
                 sim_html += "<br><span style='color:#5bc0be; font-weight:bold;'>Mức độ nguy cơ học vụ đã được cải thiện giảm xuống.</span>"

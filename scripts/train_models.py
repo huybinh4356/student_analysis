@@ -66,7 +66,7 @@ def run_pipeline():
         cv_folds=5,
     )
     print(reg_summary.to_string(index=False))
-    print(f"\n   ★ Model được chọn: {best_reg['model_name']}")
+    print(f"\n   [Best] Model được chọn: {best_reg['model_name']}")
     print(f"     Lý do: {best_reg['selection_reason']}")
     print(f"     CV R²: {best_reg['cv_metrics']['cv_r2_mean']:.4f} ± {best_reg['cv_metrics']['cv_r2_std']:.4f}, CV MAE: {best_reg['cv_metrics']['cv_mae']:.4f}")
     print(f"     Test R²: {best_reg['test_metrics']['r2']:.4f}, Test RMSE: {best_reg['test_metrics']['rmse']:.4f}, Test MAE: {best_reg['test_metrics']['mae']:.4f}\n")
@@ -82,7 +82,7 @@ def run_pipeline():
         cv_folds=5,
     )
     print(cls_summary.to_string(index=False))
-    print(f"\n   ★ Model được chọn: {best_cls['model_name']}")
+    print(f"\n   [Best] Model được chọn: {best_cls['model_name']}")
     print(f"     Lý do: {best_cls['selection_reason']}")
     print(f"     CV Macro F1: {best_cls['cv_metrics']['cv_f1_macro_mean']:.4f} ± {best_cls['cv_metrics']['cv_f1_macro_std']:.4f}")
     print(f"     Test Acc: {best_cls['test_metrics']['accuracy']:.4f}, Test Macro F1: {best_cls['test_metrics']['f1_macro']:.4f}, Recall High-Risk: {best_cls['test_metrics']['recall_high_risk']:.4f}\n")

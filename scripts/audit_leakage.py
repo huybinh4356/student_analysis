@@ -17,11 +17,11 @@ DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 excel_files = list(DATA_DIR.glob("*.xlsx"))
 
 if not excel_files:
-    print("❌ Không tìm thấy file Excel trong data/")
+    print("[LOI] Khong tim thay file Excel trong data/")
     sys.exit(1)
 
 excel_path = excel_files[0]
-print(f"📂 File: {excel_path.name}\n")
+print(f"File: {excel_path.name}\n")
 
 # Read data
 excel_file = pd.ExcelFile(excel_path)
@@ -102,22 +102,22 @@ print(f"{'='*60}")
 print("VERDICT")
 print(f"{'='*60}")
 if r2_approx > 0.90:
-    print(f"🔴 LEAKAGE SEVERE  (R²={r2_approx:.3f} > 0.90)")
+    print(f"[LEAKAGE SEVERE]  (R²={r2_approx:.3f} > 0.90)")
     print("   composite_exam_score là proxy gần như hoàn hảo của target.")
-    print("   → PHẢI loại bỏ composite_exam_score khỏi feature set.")
-    print("   → R²=94% trong README nhiều khả năng là giả tạo.")
+    print("   -> PHẢI loại bỏ composite_exam_score khỏi feature set.")
+    print("   -> R²=94% trong README nhiều khả năng là giả tạo.")
 elif r2_approx > 0.80:
-    print(f"🟠 LEAKAGE LIKELY   (R²={r2_approx:.3f} > 0.80)")
+    print(f"[LEAKAGE LIKELY]   (R²={r2_approx:.3f} > 0.80)")
     print("   composite_exam_score có thể tạo ra metric inflation.")
-    print("   → Cân nhắc loại bỏ, dùng GK/Quiz/BT riêng lẻ.")
+    print("   -> Cân nhắc loại bỏ, dùng GK/Quiz/BT riêng lẻ.")
 elif r2_approx > 0.70:
-    print(f"🟡 LEAKAGE POSSIBLE (R²={r2_approx:.3f} > 0.70)")
+    print(f"[LEAKAGE POSSIBLE] (R²={r2_approx:.3f} > 0.70)")
     print("   composite_exam_score là feature mạnh nhưng chưa phải leakage thuần túy.")
-    print("   → Giữ nhưng theo dõi; đặt tên rõ ràng hơn.")
+    print("   -> Giữ nhưng theo dõi; đặt tên rõ ràng hơn.")
 else:
-    print(f"🟢 LEAKAGE UNLIKELY (R²={r2_approx:.3f} <= 0.70)")
+    print(f"[LEAKAGE UNLIKELY] (R²={r2_approx:.3f} <= 0.70)")
     print("   composite_exam_score không phải proxy của target.")
-    print("   → Giữ feature, R²=94% có nghĩa thực sự.")
+    print("   -> Giữ feature, R²=94% có nghĩa thực sự.")
 
 print()
 
@@ -136,4 +136,4 @@ if "nguy_co_hoc_vu" in df.columns:
         print(f"  {cls:<20}: {cnt:>4} ({pct:.1f}%)")
 
 print()
-print("✅ Audit complete. Update docs/data_dictionary.md với kết quả trên.")
+print("[DONE] Audit complete. Update docs/data_dictionary.md với kết quả trên.")

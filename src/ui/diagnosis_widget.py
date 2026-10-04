@@ -138,7 +138,7 @@ class DiagnosisWidget(QWidget):
 
         info_text = f"""
             <div style='color: #f8fafc; font-size: 14px;'>
-                <b style='font-size: 16px;'>👤 {st.get('ho_ten', 'N/A')}</b> (Mã SV: <span style='color: #38bdf8;'>{st.get('ma_sv', 'N/A')}</span>)<br>
+                <b style='font-size: 16px;'>{st.get('ho_ten', 'N/A')}</b> (Mã SV: <span style='color: #38bdf8;'>{st.get('ma_sv', 'N/A')}</span>)<br>
                 <span>Ngành: <b>{st.get('nganh_hoc', 'N/A')}</b> | Quê quán: {st.get('que_quan', 'N/A')}</span><br>
                 <span>Điểm dự đoán tổng kết: <b style='color: #f59e0b; font-size: 15px;'>{predicted_score:.2f} điểm</b></span>
             </div>
@@ -155,7 +155,7 @@ class DiagnosisWidget(QWidget):
         self.content_layout.addWidget(card_profile)
 
         # 2. Prediction Confidence Score Bar
-        group_conf = QGroupBox("📊 ĐỘ TIN CẬY DỰ ĐOÁN (PREDICTION CONFIDENCE SCORE)")
+        group_conf = QGroupBox("ĐỘ TIN CẬY DỰ ĐOÁN (PREDICTION CONFIDENCE SCORE)")
         group_conf.setStyleSheet("QGroupBox { font-weight: bold; color: #f8fafc; border: 1px solid #334155; border-radius: 8px; margin-top: 8px; padding-top: 16px; background-color: #1e293b; } QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 4px; }")
         layout_conf = QVBoxLayout(group_conf)
 
@@ -196,7 +196,7 @@ class DiagnosisWidget(QWidget):
         self.content_layout.addWidget(group_conf)
 
         # 3. Categorized Missing Data Warnings (Critical, Warning, Info)
-        group_warn = QGroupBox("⚠️ CẢNH BÁO DỮ LIỆU KHUYẾT THIẾU & BẤT THƯỜNG")
+        group_warn = QGroupBox("CẢNH BÁO DỮ LIỆU KHUYẾT THIẾU & BẤT THƯỜNG")
         group_warn.setStyleSheet("QGroupBox { font-weight: bold; color: #f8fafc; border: 1px solid #334155; border-radius: 8px; margin-top: 8px; padding-top: 16px; background-color: #1e293b; } QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 4px; }")
         layout_warn = QVBoxLayout(group_warn)
 
@@ -211,36 +211,36 @@ class DiagnosisWidget(QWidget):
             infos = [m for m in missing_fields if m.severity == "info"]
 
             if crits:
-                lbl_c_header = QLabel(f"🔴 NGHIÊM TRỌNG ({len(crits)} trường):")
+                lbl_c_header = QLabel(f"[NGHIÊM TRỌNG] ({len(crits)} trường):")
                 lbl_c_header.setStyleSheet("color: #ef4444; font-weight: bold; font-size: 13px;")
                 layout_warn.addWidget(lbl_c_header)
                 for item in crits:
-                    lbl = QLabel(f"   • <b>{item.display_name}</b>: {item.reason}<br>&nbsp;&nbsp;&nbsp;&nbsp;➔ <i>Khuyến nghị: {item.suggestion}</i>")
+                    lbl = QLabel(f"   • <b>{item.display_name}</b>: {item.reason}<br>&nbsp;&nbsp;&nbsp;&nbsp;-> <i>Khuyến nghị: {item.suggestion}</i>")
                     lbl.setStyleSheet("color: #fca5a5; font-size: 12px; margin-bottom: 6px;")
                     layout_warn.addWidget(lbl)
 
             if warns:
-                lbl_w_header = QLabel(f"🟠 CẢNH BÁO ({len(warns)} trường):")
+                lbl_w_header = QLabel(f"[CẢNH BÁO] ({len(warns)} trường):")
                 lbl_w_header.setStyleSheet("color: #f59e0b; font-weight: bold; font-size: 13px; margin-top: 6px;")
                 layout_warn.addWidget(lbl_w_header)
                 for item in warns:
-                    lbl = QLabel(f"   • <b>{item.display_name}</b>: {item.reason}<br>&nbsp;&nbsp;&nbsp;&nbsp;➔ <i>Khuyến nghị: {item.suggestion}</i>")
+                    lbl = QLabel(f"   • <b>{item.display_name}</b>: {item.reason}<br>&nbsp;&nbsp;&nbsp;&nbsp;-> <i>Khuyến nghị: {item.suggestion}</i>")
                     lbl.setStyleSheet("color: #fcd34d; font-size: 12px; margin-bottom: 6px;")
                     layout_warn.addWidget(lbl)
 
             if infos:
-                lbl_i_header = QLabel(f"🟡 THÔNG TIN BỔ SUNG ({len(infos)} trường):")
+                lbl_i_header = QLabel(f"[THÔNG TIN BỔ SUNG] ({len(infos)} trường):")
                 lbl_i_header.setStyleSheet("color: #38bdf8; font-weight: bold; font-size: 13px; margin-top: 6px;")
                 layout_warn.addWidget(lbl_i_header)
                 for item in infos:
-                    lbl = QLabel(f"   • <b>{item.display_name}</b>: {item.reason}<br>&nbsp;&nbsp;&nbsp;&nbsp;➔ <i>Khuyến nghị: {item.suggestion}</i>")
+                    lbl = QLabel(f"   • <b>{item.display_name}</b>: {item.reason}<br>&nbsp;&nbsp;&nbsp;&nbsp;-> <i>Khuyến nghị: {item.suggestion}</i>")
                     lbl.setStyleSheet("color: #93c5fd; font-size: 12px; margin-bottom: 6px;")
                     layout_warn.addWidget(lbl)
 
         self.content_layout.addWidget(group_warn)
 
         # 4. Actionable Pedagogical Intervention Recommendations
-        group_rec = QGroupBox("💡 HÀNH ĐỘNG CAN THIỆP & TƯ VẤN KHUYẾN NGHỊ FOR GIẢNG VIÊN")
+        group_rec = QGroupBox("HÀNH ĐỘNG CAN THIỆP & TƯ VẤN KHUYẾN NGHỊ CHO GIẢNG VIÊN")
         group_rec.setStyleSheet("QGroupBox { font-weight: bold; color: #f8fafc; border: 1px solid #334155; border-radius: 8px; margin-top: 8px; padding-top: 16px; background-color: #1e293b; } QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 4px; }")
         layout_rec = QVBoxLayout(group_rec)
 

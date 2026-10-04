@@ -86,14 +86,14 @@ def run_eda():
     corr_reg = corr_matrix["diem_tong_ket"].sort_values(ascending=False)
     for var, val in corr_reg.items():
         if var != "diem_tong_ket":
-            flag = "⚠️ CẢNH BÁO LEAKAGE (>0.95)" if abs(val) > 0.95 else "OK"
+            flag = "[CANH BAO LEAKAGE (>0.95)]" if abs(val) > 0.95 else "OK"
             print(f"     - {var:<20}: {val:>6.3f} [{flag}]")
 
     print("\n   * Tương quan Pearson với NguyCoHocVu Encoded (Classification Target):")
     corr_cls = corr_matrix["nguy_co_encoded"].sort_values(ascending=False)
     for var, val in corr_cls.items():
         if var != "nguy_co_encoded":
-            flag = "⚠️ CẢNH BÁO LEAKAGE (>0.95)" if abs(val) > 0.95 else "OK"
+            flag = "[CANH BAO LEAKAGE (>0.95)]" if abs(val) > 0.95 else "OK"
             print(f"     - {var:<20}: {val:>6.3f} [{flag}]")
     print("\n")
 

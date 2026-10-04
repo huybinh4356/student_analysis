@@ -46,7 +46,7 @@ class DataManagementWidget(QWidget):
         self.upload_widget = UploadWidget()
         self.health_widget = DataHealthWidget()
 
-        self.tabs.addTab(self.upload_widget, "📁 Tải File Excel Mới & CSDL PostgreSQL")
-        self.tabs.addTab(self.health_widget, "📊 Báo Cáo Sức Khỏe Dữ Liệu Dataset")
+        self.tabs.addTab(self.upload_widget, "Tải File Excel Mới & CSDL PostgreSQL")
+        self.tabs.addTab(self.health_widget, "Báo Cáo Sức Khỏe Dữ Liệu Dataset")
 
         layout.addWidget(self.tabs)

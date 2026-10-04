@@ -156,7 +156,7 @@ class AnalysisWidget(QWidget):
                 "Test R²": reg.get("test_metrics", {}).get("r2"),
                 "Test RMSE": reg.get("test_metrics", {}).get("rmse"),
                 "Test MAE": reg.get("test_metrics", {}).get("mae"),
-                "Selected": "★ Best",
+                "Selected": "[Best]",
             }])
             self._populate_table(self.table_reg, df_reg)
 
@@ -169,7 +169,7 @@ class AnalysisWidget(QWidget):
                 "Test Accuracy": cls_.get("test_metrics", {}).get("accuracy"),
                 "Test F1-Macro": cls_.get("test_metrics", {}).get("f1_macro"),
                 "Recall High-Risk": cls_.get("test_metrics", {}).get("recall_high_risk"),
-                "Selected": "★ Best",
+                "Selected": "[Best]",
             }])
             self._populate_table(self.table_cls, df_cls)
 

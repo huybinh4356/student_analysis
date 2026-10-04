@@ -45,7 +45,7 @@ class WhatIfWidget(QWidget):
 
         # Header Row: Title & Student Dropdown Selector
         top_layout = QHBoxLayout()
-        title = QLabel("🔮 Mô Phỏng Giả Định Học Tập (What-If Simulation Engine)")
+        title = QLabel("Mô Phỏng Giả Định Học Tập (What-If Simulation Engine)")
         title.setStyleSheet("font-size: 18px; font-weight: bold; color: #f8fafc;")
         top_layout.addWidget(title)
         top_layout.addStretch()
@@ -98,21 +98,21 @@ class WhatIfWidget(QWidget):
             }
         """)
 
-        # Tab 1: ⚙️ Interactive Sliders & Realtime Simulation
+        # Tab 1: Interactive Sliders & Realtime Simulation
         tab_sim = self._create_simulation_tab()
-        self.tabs.addTab(tab_sim, "⚙️ Điều Chỉnh & Mô Phỏng")
+        self.tabs.addTab(tab_sim, "Điều Chỉnh & Mô Phỏng")
 
-        # Tab 2: 📈 Sensitivity Analysis (Độ Nhạy)
+        # Tab 2: Sensitivity Analysis (Độ Nhạy)
         tab_sens = self._create_sensitivity_tab()
-        self.tabs.addTab(tab_sens, "📈 Phân Tích Độ Nhạy")
+        self.tabs.addTab(tab_sens, "Phân Tích Độ Nhạy")
 
-        # Tab 3: 🎯 Reverse What-If (Đạt Mục Tiêu)
+        # Tab 3: Reverse What-If (Đạt Mục Tiêu)
         tab_rev = self._create_reverse_tab()
-        self.tabs.addTab(tab_rev, "🎯 Reverse - Đạt Mục Tiêu")
+        self.tabs.addTab(tab_rev, "Reverse - Đạt Mục Tiêu")
 
-        # Tab 4: 💾 Scenario Manager (Lưu & So Sánh)
+        # Tab 4: Scenario Manager (Lưu & So Sánh)
         tab_scn = self._create_scenario_tab()
-        self.tabs.addTab(tab_scn, "💾 Quản Lý Kịch Bản")
+        self.tabs.addTab(tab_scn, "Quản Lý Kịch Bản")
 
         main_layout.addWidget(self.tabs)
 
@@ -123,7 +123,7 @@ class WhatIfWidget(QWidget):
         layout.setSpacing(16)
 
         # LEFT COLUMN: 7 Sliders & Control Buttons
-        left_box = QGroupBox("⚙️ ĐIỀU CHỈNH CHỈ SỐ HỌC TẬP (7 BIẾN ĐÒN BẨY)")
+        left_box = QGroupBox("ĐIỀU CHỈNH CHỈ SỐ HỌC TẬP (7 BIẾN ĐÒN BẨY)")
         left_box.setStyleSheet("QGroupBox { font-weight: bold; color: #f8fafc; border: 1px solid #334155; border-radius: 8px; background-color: #1e293b; } QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 4px; }")
         left_layout = QVBoxLayout(left_box)
         left_layout.setSpacing(10)
@@ -186,12 +186,12 @@ class WhatIfWidget(QWidget):
 
         # Action Buttons Row
         btn_row = QHBoxLayout()
-        self.btn_reset = QPushButton("🔄 Reset Về Gốc")
+        self.btn_reset = QPushButton("Reset Về Gốc")
         self.btn_reset.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_reset.setStyleSheet("QPushButton { background-color: #475569; color: white; font-weight: bold; padding: 8px 12px; border-radius: 6px; } QPushButton:hover { background-color: #64748b; }")
         self.btn_reset.clicked.connect(self.reset_sliders_to_student_defaults)
 
-        self.btn_save_scenario = QPushButton("💾 Lưu Kịch Bản")
+        self.btn_save_scenario = QPushButton("Lưu Kịch Bản")
         self.btn_save_scenario.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_save_scenario.setStyleSheet("QPushButton { background-color: #10b981; color: white; font-weight: bold; padding: 8px 12px; border-radius: 6px; } QPushButton:hover { background-color: #059669; }")
         self.btn_save_scenario.clicked.connect(self.save_current_scenario)
@@ -203,7 +203,7 @@ class WhatIfWidget(QWidget):
         layout.addWidget(left_box, stretch=4)
 
         # RIGHT COLUMN: Before/After Cards, Delta Badge, Chart, and Dynamic Advice
-        right_box = QGroupBox("📊 KẾT QUẢ MÔ PHỎNG DỰ BÁO")
+        right_box = QGroupBox("KẾT QUẢ MÔ PHỎNG DỰ BÁO")
         right_box.setStyleSheet("QGroupBox { font-weight: bold; color: #f8fafc; border: 1px solid #334155; border-radius: 8px; background-color: #1e293b; } QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 4px; }")
         right_layout = QVBoxLayout(right_box)
         right_layout.setSpacing(12)
@@ -279,7 +279,7 @@ class WhatIfWidget(QWidget):
         layout.setSpacing(16)
 
         # Ranking Table
-        left_box = QGroupBox("📋 BẢNG XẾP HẠNG TÁC ĐỘNG (SENSITIVITY RANKING)")
+        left_box = QGroupBox("BẢNG XẾP HẠNG TÁC ĐỘNG (SENSITIVITY RANKING)")
         left_box.setStyleSheet("QGroupBox { font-weight: bold; color: #f8fafc; border: 1px solid #334155; border-radius: 8px; background-color: #1e293b; } QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 4px; }")
         l_layout = QVBoxLayout(left_box)
 
@@ -293,7 +293,7 @@ class WhatIfWidget(QWidget):
         layout.addWidget(left_box, stretch=4)
 
         # Horizontal Sensitivity Bar Chart
-        right_box = QGroupBox("📊 BIỂU ĐỒ ĐỘ NHẠY BIẾN ĐÒN BẨY")
+        right_box = QGroupBox("BIỂU ĐỒ ĐỘ NHẠY BIẾN ĐÒN BẨY")
         right_box.setStyleSheet("QGroupBox { font-weight: bold; color: #f8fafc; border: 1px solid #334155; border-radius: 8px; background-color: #1e293b; } QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 4px; }")
         r_layout = QVBoxLayout(right_box)
 
@@ -309,7 +309,7 @@ class WhatIfWidget(QWidget):
         layout.setContentsMargins(16, 16, 16, 16)
         layout.setSpacing(16)
 
-        box = QGroupBox("🎯 REVERSE WHAT-IF: TÌM ĐIỀU KIỆN TỐI THIỂU ĐỂ ĐẠT MỤC TIÊU")
+        box = QGroupBox("REVERSE WHAT-IF: TÌM ĐIỀU KIỆN TỐI THIỂU ĐỂ ĐẠT MỤC TIÊU")
         box.setStyleSheet("QGroupBox { font-weight: bold; color: #f8fafc; border: 1px solid #334155; border-radius: 8px; background-color: #1e293b; } QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 4px; }")
         box_layout = QVBoxLayout(box)
         box_layout.setSpacing(12)
@@ -327,7 +327,7 @@ class WhatIfWidget(QWidget):
         self.spin_target.setStyleSheet("QDoubleSpinBox { background-color: #0f172a; color: #f8fafc; font-size: 14px; font-weight: bold; padding: 6px 12px; border: 1px solid #475569; border-radius: 6px; }")
         inp_row.addWidget(self.spin_target)
 
-        self.btn_calc_reverse = QPushButton("🚀 Tính Toán Phương Án Optimal")
+        self.btn_calc_reverse = QPushButton("Tính Toán Phương Án Tối Ưu")
         self.btn_calc_reverse.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_calc_reverse.setStyleSheet("QPushButton { background-color: #3b82f6; color: white; font-weight: bold; padding: 8px 16px; border-radius: 6px; } QPushButton:hover { background-color: #2563eb; }")
         self.btn_calc_reverse.clicked.connect(self.run_reverse_whatif)
@@ -351,7 +351,7 @@ class WhatIfWidget(QWidget):
         layout.setContentsMargins(16, 16, 16, 16)
         layout.setSpacing(12)
 
-        box = QGroupBox("💾 DANH SÁCH KỊCH BẢN ĐÃ LƯU")
+        box = QGroupBox("DANH SÁCH KỊCH BẢN ĐÃ LƯU")
         box.setStyleSheet("QGroupBox { font-weight: bold; color: #f8fafc; border: 1px solid #334155; border-radius: 8px; background-color: #1e293b; } QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 4px; }")
         box_layout = QVBoxLayout(box)
 
@@ -469,13 +469,13 @@ class WhatIfWidget(QWidget):
 
         # Update Delta badge
         if delta > 0.01:
-            self.lbl_delta.setText(f"Δ +{delta:.2f} điểm 🟢")
+            self.lbl_delta.setText(f"Δ +{delta:.2f} điểm (+)")
             self.lbl_delta.setStyleSheet("background-color: #059669; color: white; font-weight: bold; font-size: 13px; padding: 6px 12px; border-radius: 16px;")
         elif delta < -0.01:
-            self.lbl_delta.setText(f"Δ {delta:.2f} điểm 🔴")
+            self.lbl_delta.setText(f"Δ {delta:.2f} điểm (-)")
             self.lbl_delta.setStyleSheet("background-color: #dc2626; color: white; font-weight: bold; font-size: 13px; padding: 6px 12px; border-radius: 16px;")
         else:
-            self.lbl_delta.setText(f"Δ {delta:.2f} điểm ⚪")
+            self.lbl_delta.setText(f"Δ {delta:.2f} điểm (0)")
             self.lbl_delta.setStyleSheet("background-color: #475569; color: white; font-weight: bold; font-size: 13px; padding: 6px 12px; border-radius: 16px;")
 
         # Update Chart
@@ -513,16 +513,16 @@ class WhatIfWidget(QWidget):
         res = self.engine.reverse_whatif(self.current_student, target_score)
 
         lines = [
-            f"<b>🎯 MỤC TIÊU ĐIỂM SỐ: <span style='color: #f59e0b;'>{target_score:.2f} điểm</span></b>",
+            f"<b>MỤC TIÊU ĐIỂM SỐ: <span style='color: #f59e0b;'>{target_score:.2f} điểm</span></b>",
             f"• Điểm hiện tại của sinh viên: <b>{res['current_score']:.2f} điểm</b>",
             f"• Điểm ước tính đạt được: <b><span style='color: #10b981;'>{res.get('achieved_score', res['current_score']):.2f} điểm</span></b>",
-            f"• Trạng thái khả thi: <b>{'🟢 Khả thi' if res['achievable'] else '🟠 Cần nỗ lực tối đa'}</b>",
-            f"<br><b>💡 PHƯƠNG ÁN ĐIỀU CHỈNH CHỈ SỐ TỐI THIỂU:</b>",
+            f"• Trạng thái khả thi: <b>{'[Khả thi]' if res['achievable'] else '[Cần nỗ lực tối đa]'}</b>",
+            f"<br><b>PHƯƠNG ÁN ĐIỀU CHỈNH CHỈ SỐ TỐI THIỂU:</b>",
         ]
 
         if res["changes"]:
             for key, info in res["changes"].items():
-                lines.append(f"   • <b>{info['name']}</b>: Tăng từ <code>{info['from']}</code> ➔ <code>{info['to']}</code> (<span style='color: #38bdf8;'>+{info['increase']}</span>)")
+                lines.append(f"   • <b>{info['name']}</b>: Tăng từ <code>{info['from']}</code> -> <code>{info['to']}</code> (<span style='color: #38bdf8;'>+{info['increase']}</span>)")
         else:
             lines.append("   • Không cần thay đổi chỉ số nào.")
 

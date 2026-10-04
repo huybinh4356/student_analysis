@@ -1,32 +1,32 @@
-# 🎓 Hệ thống Phân tích & Dự báo Nguy cơ Học vụ Sinh viên (v3.0.0)
+# Hệ thống Phân tích & Dự báo Nguy cơ Học vụ Sinh viên (v3.0.0)
 
 Ứng dụng Desktop chuyên nghiệp (PyQt6) tích hợp Machine Learning, Data Governance và Cơ sở dữ liệu PostgreSQL trong Docker, phục vụ công tác cố vấn học tập và cảnh báo sớm học vụ tại trường đại học.
 
 ---
 
-## 🏛️ Kiến Trúc Hệ Thống (Platform Architecture)
+## Kiến Trúc Hệ Thống (Platform Architecture)
 
 ```
 Student Analysis Platform v3
 │
-├── 🛡️ Data Governance Layer
+├── Data Governance Layer
 │   ├── Schema Validation & Contract (src/data/schema.py, validator.py)
 │   ├── Data Quality & Health Reporting (src/data/quality.py)
 │   └── Transactional Safe Ingestion (src/data/ingestion.py)
 │
-├── 🧠 ML Platform Layer
+├── ML Platform Layer
 │   ├── Preprocessing Pipeline (ColumnTransformer: OneHot, Imputer, Scaler)
 │   ├── Zero-Leakage Cross-Validation (5-Fold CV on raw training features)
 │   ├── CV-Driven Model Selection (Parsimony principle, zero test-set snooping)
 │   └── Model Registry & Bundle Persistence (models/registry.json, bundles)
 │
-├── 🔮 Prediction Platform Layer
+├── Prediction Platform Layer
 │   ├── Centralized Prediction Service (src/services/prediction_service.py)
 │   ├── Calibrated Multi-Class Risk Probabilities
 │   ├── Data Completeness & Prediction Reliability Metric
 │   └── What-If Simulation & Constrained Target Solver (scipy.optimize)
 │
-├── 🖥️ Application Layer (PyQt6)
+├── Application Layer (PyQt6)
 │   ├── Tab 1: Quản lý File Excel & CSDL PostgreSQL / Data Health
 │   ├── Tab 2: Tùy chọn Biểu đồ Thống kê EDA
 │   ├── Tab 3: Trung tâm Huấn luyện & Đánh giá ML (Non-blocking QThread)
@@ -34,7 +34,7 @@ Student Analysis Platform v3
 │   ├── Tab 5: Mô phỏng Kịch bản What-If & Phân tích Độ nhạy Chuẩn hóa
 │   └── Tab 6: Xuất Báo cáo Động (Dynamic Performance Reporting)
 │
-└── ⚙️ Engineering & DevOps
+└── Engineering & DevOps
     ├── Pytest Suite (Unit, Regression & Pipeline Contracts)
     ├── pyproject.toml & GitHub Actions CI Pipeline
     ├── One-Click Launcher (run.bat / run_app.bat)
@@ -43,7 +43,7 @@ Student Analysis Platform v3
 
 ---
 
-## 🔬 Phương Pháp Luận Machine Learning (ML Methodology)
+## Phương Pháp Luận Machine Learning (ML Methodology)
 
 ### 1. Chính sách Ngăn ngừa Rò rỉ Dữ liệu (Leakage Prevention)
 - **Loại bỏ `composite_exam_score`**: Audit thực nghiệm cho thấy biến tổng hợp `0.4*GK + 0.3*Quiz + 0.3*BT` có tương quan $R^2 = 0.938$ với điểm tổng kết — đây là biến gây rò rỉ dữ liệu (feature leakage) làm thổi phồng chỉ số giả tạo. Trong phiên bản 3.0, biến này **bị cấm hoàn toàn**.
@@ -63,16 +63,16 @@ Student Analysis Platform v3
 
 ---
 
-## ⚖️ Tuyên Bố Về Bản Chất Dự Báo & Đạo Đức AI (Ethical Disclaimers)
+## Tuyên Bố Về Bản Chất Dự Báo & Đạo Đức AI (Ethical Disclaimers)
 
-> **⚠️ Lưu ý quan trọng**:
+> **Lưu ý quan trọng**:
 > - Tính năng **Mô phỏng What-If** là công cụ **mô phỏng kịch bản dự báo thống kê (predictive simulation)**, không đại diện cho can thiệp nhân quả thực tế (causal estimation).
 > - Hệ thống tuân thủ nghiêm ngặt chuẩn mực đạo đức sư phạm: sử dụng thuật ngữ mang tính hỗ trợ ("Có nguy cơ học vụ", "Cần cố vấn"), tuyệt đối không gán nhãn tiêu cực ("Sẽ thi trượt").
 > - Quyết định can thiệp học vụ chính thức luôn thuộc về Giảng viên và Hội đồng Sư phạm.
 
 ---
 
-## 🚀 Hướng Dẫn Khởi Chạy 1-Click (Quickstart)
+## Hướng Dẫn Khởi Chạy 1-Click (Quickstart)
 
 ### Cách 1: Chạy tự động bằng file script
 Nhấp đúp chuột vào file **`run.bat`** (hoặc `run_app.bat`). Script sẽ tự động:
@@ -99,7 +99,7 @@ python main.py
 
 ---
 
-## 🧪 Kiểm Thử Hệ Thống (Testing)
+## Kiểm Thử Hệ Thống (Testing)
 
 Chạy bộ kiểm thử tự động toàn diện:
 ```bash
@@ -109,5 +109,5 @@ pytest tests/unit/ -v
 
 ---
 
-## 📄 Bản Quyền
+## Bản Quyền
 Dự án phục vụ mục đích nghiên cứu và triển khai ứng dụng quản lý đào tạo đại học.
