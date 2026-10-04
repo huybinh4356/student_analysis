@@ -23,3 +23,7 @@ Thumbs.db
 
 # Task Logs
 *.log
+
+# Exported Reports
+Bao_Cao_*.txt
+*.pdf
