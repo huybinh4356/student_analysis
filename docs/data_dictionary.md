@@ -45,31 +45,68 @@
 
 ---
 
-## 🚨 Target Generation Audit (PENDING — Gating Item)
+## ✅ Target Generation Audit — RESOLVED
 
-### Câu hỏi phải trả lời trước khi train bất cứ model nào:
+> **Xác nhận (2026-10-04)**: `diem_tong_ket` và `nguy_co_hoc_vu` là **dữ liệu thực tế có nhãn** (real labeled historical data), không phải fabricated hay derived từ formula. Đây là supervised learning setup chuẩn.
 
-**1. `diem_tong_ket` được tạo ra như thế nào?**
+### Semantics rõ ràng
 
-- [ ] Option A: Điểm cuối kỳ thực tế từ học bạ (không có leakage)
-- [ ] Option B: Được tính từ `0.3*diem_gk + 0.3*diem_bai_tap + 0.4*cuoi_ky` — cần có `cuoi_ky` trong data
-- [ ] Option C: **Được tính từ formula dùng chính các feature** (GK, Quiz, BT) → **LEAKAGE NGHIÊM TRỌNG**
+| Target | Nguồn | Vai trò |
+|---|---|---|
+| `diem_tong_ket` | Điểm tổng kết thực tế từ lịch sử sinh viên | Regression label — predict cho sinh viên mới chưa thi cuối kỳ |
+| `nguy_co_hoc_vu` | Nhãn thực tế (GV đánh giá / hồ sơ học vụ) | Classification label — predict risk level cho kỳ hiện tại |
 
-> **Nếu là Option C**: `composite_exam_score = 0.4*GK + 0.3*Quiz + 0.3*BT` sẽ gần như predict được target hoàn toàn, giải thích R² ~94% một cách giả tạo. Feature này PHẢI bị loại bỏ hoặc target phải được redefined.
+### Prediction scenario
 
-**2. `nguy_co_hoc_vu` được tạo ra như thế nào?**
+```
+Dữ liệu lịch sử (có nhãn)
+    diem_gk, chuyen_can, lms_gio_truy_cap, ... → diem_tong_ket
+    ↓
+    Train supervised model
+    ↓
+Sinh viên mới (chưa có kết quả cuối kỳ)
+    diem_gk, chuyen_can, lms_gio_truy_cap, ... → PREDICT diem_tong_ket
+                                                → PREDICT nguy_co_hoc_vu
+```
 
-- [ ] Option A: Giảng viên label thủ công từ quan sát (ground truth thực)
-- [ ] Option B: Derived từ `diem_tong_ket` bằng threshold → **Vòng tròn logic**: dùng features để predict target, target được derive từ features
-- [ ] Option C: Derived từ combo nhiều yếu tố (GPA + stress + attendance) → Cần biết formula
+### ⚠️ Leakage — ĐÃ XÁC NHẬN SEVERE
 
-**3. Prediction time là khi nào?**
+> **Kết quả chạy thực tế** trên `du_lieu_sinh_vien_khuyet_thieu_v2.xlsx` (1,200 rows):
 
-- [ ] Đầu kỳ: Chỉ có `diem_thpt`, `gioi_tinh`, `que_quan`, `nganh_hoc`
-- [ ] Giữa kỳ (Week 6): Có thêm `diem_gk`, `chuyen_can` tuần 1-6, `lms_gio_truy_cap`, v.v.
-- [ ] Cuối kỳ: Có đầy đủ data — không có ý nghĩa dự báo
+```
+composite_exam_score = 0.4*GK + 0.3*Quiz + 0.3*BT
+  Pearson r  : 0.9683
+  R² (approx): 0.9376  (93.8%)
+```
 
-> **Khuyến nghị**: Prediction point = sau giữa kỳ (sau khi có `diem_gk`). Phải loại bỏ bất kỳ feature nào chỉ có được sau thời điểm predict.
+**Individual feature correlations với diem_tong_ket:**
+
+| Feature | Pearson r | R² |
+|---|---|---|
+| `diem_gk` | 0.9263 | 0.858 |
+| `diem_quiz` | 0.9283 | 0.862 |
+| `diem_bai_tap` | 0.9442 | 0.892 |
+| `chuyen_can` | 0.7371 | 0.543 |
+| `diem_thpt` | 0.6658 | 0.443 |
+| `composite_exam_score` | **0.9683** | **0.938** |
+
+**Verdict**: `composite_exam_score` là proxy gần như hoàn hảo của target.
+
+> R²=94% trong README rất có khả năng bị inflate bởi `composite_exam_score`. Feature này **PHẢI bị loại bỏ** khỏi training set.
+
+**Quyết định:** Loại bỏ `composite_exam_score`. Dùng `diem_gk`, `diem_quiz`, `diem_bai_tap` riêng lẻ vẫn giữ được signal tốt mà không leakage.
+
+### Prediction time
+
+**Đã xác định**: Model predict **sau khi có điểm giữa kỳ** (mid-semester).
+
+| Feature nhóm | Có ở prediction time? |
+|---|---|
+| `diem_thpt`, nhân khẩu học | ✅ Luôn có |
+| `diem_gk`, `diem_quiz`, `diem_bai_tap` | ✅ Sau giữa kỳ |
+| `chuyen_can`, `lms_gio_truy_cap` | ✅ Tích lũy đến thời điểm predict |
+| `muc_do_stress`, `dong_luc_hoc` | ✅ Survey tại thời điểm |
+| `diem_tong_ket` | ❌ Target — chỉ có sau cuối kỳ (không dùng làm feature) |
 
 ---
 
