@@ -1,26 +1,2 @@
 @echo off
-chcp 65001 > nul
-title Student Performance Analysis System
-
-cd /d "%~dp0"
-
-echo ==================================================================
-echo   STUDENT PERFORMANCE ANALYSIS AND PREDICTION SYSTEM
-echo ==================================================================
-echo.
-echo [INFO] Launching Desktop Application...
-echo.
-
-REM 1. Launch application using virtual environment python
-if exist ".venv\Scripts\python.exe" (
-    .venv\Scripts\python.exe main.py
-) else (
-    python main.py
-)
-
-REM 2. If python exits with error, pause so the window does not vanish immediately
-if errorlevel 1 (
-    echo.
-    echo [ERROR] Application encountered an error or exited unexpectedly.
-    pause
-)
+call "%~dp0run.bat"
