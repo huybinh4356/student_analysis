@@ -30,18 +30,16 @@ class DataLoader:
     @staticmethod
     def load_from_excel(file_path: Path) -> pd.DataFrame:
         """
-        Loads dataset directly from Excel file.
+        Loads dataset directly from Excel file with automated header detection and column normalization.
 
         Args:
             file_path: Path to Excel spreadsheet.
 
         Returns:
-            pd.DataFrame: Student records.
+            pd.DataFrame: Student records with canonical column names.
         """
-        if not file_path.exists():
-            raise FileNotFoundError(f"File not found: {file_path}")
-        df = pd.read_excel(file_path, sheet_name="Du_Lieu_Sinh_Vien", header=1)
-        return df
+        from src.data.ingestion import parse_excel
+        return parse_excel(file_path)
 
     @staticmethod
     def load_data(file_path: Optional[Path] = None) -> pd.DataFrame:

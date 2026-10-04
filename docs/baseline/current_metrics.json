@@ -1,58 +1,17 @@
 {
-  "_note": "Baseline metrics — phải chạy thực tế, không điền từ README. NULL = chưa đo.",
-  "_captured": "2026-10-04",
-  "_tag": "v2.0.0-pre-refactor",
-  "_instructions": "Để đo thực tế: chạy src/core/model_trainer.py với dataset hiện tại, ghi kết quả vào đây.",
-
-  "dataset": {
-    "source": "data/du_lieu_sinh_vien_tong_hop.xlsx",
-    "total_rows": null,
-    "train_rows": null,
-    "test_rows": null,
-    "features_used": null,
-    "target_regression": "diem_tong_ket",
-    "target_classification": "nguy_co_hoc_vu",
-    "train_test_split": "80/20 stratified"
-  },
-
   "regression": {
-    "_model_selected": null,
-    "_artifact_stored_as": "ridge_regression_model.pkl",
-    "_warning": "Tên artifact sai — actual model có thể là Ridge hoặc XGBoost",
-    "r2_train": null,
-    "r2_cv_mean": null,
-    "r2_cv_std": null,
-    "r2_test": null,
-    "mae_test": null,
-    "rmse_test": null,
-    "readme_claim_r2": 0.94,
-    "readme_claim_mae": 0.27
+    "model_name": "Lasso Regression",
+    "cv_r2": 0.9366,
+    "r2": 0.9431,
+    "mae": 0.2633,
+    "rmse": 0.3317
   },
-
   "classification": {
-    "_model_selected": null,
-    "_artifact_stored_as": "risk_classifier_model.pkl",
-    "accuracy_train": null,
-    "accuracy_cv_mean": null,
-    "accuracy_test": null,
-    "f1_macro_test": null,
-    "f1_weighted_test": null,
-    "recall_high_risk": null,
-    "precision_high_risk": null,
-    "readme_claim_accuracy": 0.97,
-    "readme_claim_f1_macro": 0.966
-  },
-
-  "leakage_audit": {
-    "composite_exam_score_vs_target": "PENDING — cần kiểm tra correlation(composite_exam_score, diem_tong_ket)",
-    "prediction_time_defined": false,
-    "future_data_used": "UNKNOWN"
-  },
-
-  "data_quality": {
-    "missing_rate": null,
-    "invalid_rate": null,
-    "duplicate_rows": null,
-    "duplicate_student_ids": null
+    "model_name": "XGBoost Classifier",
+    "cv_f1_macro": 0.9573,
+    "accuracy": 0.98,
+    "f1_macro": 0.9724,
+    "f1_weighted": 0.9799,
+    "recall_high_risk": 0.9091
   }
 }
