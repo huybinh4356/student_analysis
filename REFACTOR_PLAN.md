@@ -90,12 +90,12 @@ Student Analysis Platform v3
 - [x] Prediction time defined (Week 6 / post-midterm)
 - [x] Schema validation tests pass (51/51 unit tests passed)
 
-### GATE 2 — ML ✅/❌
-- [ ] No preprocessing leakage (sklearn.Pipeline)
-- [ ] CV is clean (raw data, not transformed)
-- [ ] Test set untouched until final evaluation
-- [ ] Best model selected from CV only
-- [ ] Metrics persisted to metrics.json
+### GATE 2 — ML ✅ PASSED (2026-10-04)
+- [x] No preprocessing leakage (ColumnTransformer inside sklearn.Pipeline)
+- [x] CV is clean (evaluated on raw DataFrame, preprocessor fits per-fold)
+- [x] Test set untouched until final evaluation (evaluated once on best model)
+- [x] Best model selected from CV only (Regression: Lasso by CV R²=0.9366; Classification: XGBoost by CV Macro F1=0.9573)
+- [x] Metrics persisted to metrics.json and models/registry.json
 
 ### GATE 3 — Prediction ✅/❌
 - [ ] One PredictionService (single entry point)
