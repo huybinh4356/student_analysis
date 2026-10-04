@@ -83,12 +83,12 @@ Student Analysis Platform v3
 
 ## 5 Gates — Phải pass trước khi qua phase tiếp theo
 
-### GATE 1 — Data ✅/❌
-- [ ] Data dictionary documented (`docs/data_dictionary.md`)
-- [ ] Target generation audited (diem_tong_ket, nguy_co_hoc_vu)
-- [ ] Leakage audit completed (composite_exam_score)
-- [ ] Prediction time defined
-- [ ] Schema validation tests pass
+### GATE 1 — Data ✅ PASSED (2026-10-04)
+- [x] Data dictionary documented (`docs/data_dictionary.md`)
+- [x] Target generation audited (diem_tong_ket, nguy_co_hoc_vu: real labeled data)
+- [x] Leakage audit completed (composite_exam_score: R²=0.938 with target — REMOVED & BANNED)
+- [x] Prediction time defined (Week 6 / post-midterm)
+- [x] Schema validation tests pass (51/51 unit tests passed)
 
 ### GATE 2 — ML ✅/❌
 - [ ] No preprocessing leakage (sklearn.Pipeline)
