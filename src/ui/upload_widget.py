@@ -64,15 +64,21 @@ class UploadWidget(QWidget):
         """Loads data from PostgreSQL database into table preview."""
         try:
             df = DataLoader.load_from_db()
+            source_name = "PostgreSQL Database"
             if df.empty:
-                self.lbl_status.setText("Chưa có dữ liệu trong Database.")
+                df = DataLoader.load_data()
+                source_name = "Dữ liệu Offline (Excel)"
+
+            if df.empty:
+                self.lbl_status.setText("Chưa có dữ liệu sinh viên.")
                 return
 
-            self.table.setRowCount(len(df))
+            preview_limit = min(len(df), 200)
+            self.table.setRowCount(preview_limit)
             self.table.setColumnCount(len(df.columns))
             self.table.setHorizontalHeaderLabels(df.columns)
 
-            for i in range(len(df)):  # Display all rows in database
+            for i in range(preview_limit):
                 for j, col in enumerate(df.columns):
                     val = df.iloc[i, j]
                     if pd.isna(val) or val is None or str(val).strip().lower() in ["none", "nan", "<na>", ""]:
@@ -83,9 +89,12 @@ class UploadWidget(QWidget):
                     item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                     self.table.setItem(i, j, item)
 
-            self.lbl_status.setText(f"Trạng thái: Đã tải thành công {len(df):,} bản ghi sinh viên từ PostgreSQL Database.")
+            if len(df) > preview_limit:
+                self.lbl_status.setText(f"Trạng thái: Đã tải {len(df):,} bản ghi ({source_name}) — hiển thị {preview_limit} bản ghi xem trước.")
+            else:
+                self.lbl_status.setText(f"Trạng thái: Đã tải thành công {len(df):,} bản ghi sinh viên ({source_name}).")
         except Exception as e:
-            self.lbl_status.setText(f"Lỗi truy vấn Database: {str(e)}")
+            self.lbl_status.setText(f"Lỗi tải dữ liệu: {str(e)}")
 
     def handle_upload(self):
         """Handles Excel file selection and database ingestion."""

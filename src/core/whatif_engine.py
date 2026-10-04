@@ -99,9 +99,11 @@ class WhatIfEngine:
         for it in items:
             results.append({
                 "feature": it.feature_name,
+                "name": it.feature_label_vi,
                 "label": it.feature_label_vi,
                 "delta": it.score_impact,
                 "impact": it.score_impact,
+                "stars": "⭐" * max(1, min(5, int(abs(it.score_impact) * 5 + 1))),
                 "effect_per_unit": it.effect_per_unit,
                 "display": f"{it.unit_step} → {'+' if it.score_impact >= 0 else ''}{it.score_impact:.2f} điểm",
                 "impact_type": "Tích cực" if it.score_impact >= 0 else "Tiêu cực",
@@ -117,9 +119,11 @@ class WhatIfEngine:
         Solves for minimum intervention required to reach target score
         using bounded optimization (WHATIF-03).
         """
+        current_score = self.predict_score(student_data)
         sol = self.service.solve_target_score(student_data, target_score)
         
         actions = []
+        changes_dict = {}
         for feat, diff in sol.required_changes.items():
             name_vi = next((f["name"] for f in self.SLIDER_FEATURES if f["key"] == feat), feat)
             actions.append({
@@ -129,14 +133,57 @@ class WhatIfEngine:
                 "target": diff["de_xuat"],
                 "delta": diff["thay_doi"],
             })
+            changes_dict[feat] = {
+                "name": name_vi,
+                "from": diff["hien_tai"],
+                "to": diff["de_xuat"],
+                "increase": diff["thay_doi"],
+            }
 
         return {
+            "current_score": current_score,
             "target_score": sol.target_score,
+            "achieved_score": sol.achievable_score,
             "achievable_score": sol.achievable_score,
             "achieved": sol.achieved,
             "achievable": sol.achieved,
-            "changes": sol.required_changes,
+            "changes": changes_dict,
             "recommended_actions": actions,
             "message": sol.message,
             "disclaimer": DISCLAIMER_TEXT,
         }
+
+    def generate_advice(
+        self,
+        student_data: Dict[str, Any],
+        changes: Dict[str, Any],
+        old_score: float,
+        new_score: float,
+    ) -> str:
+        """
+        Generates dynamic pedagogical intervention advice based on simulation delta.
+        """
+        delta = new_score - old_score
+        advice_lines = []
+
+        if delta > 0.5:
+            advice_lines.append(f"🟢 **Tác động rất tích cực (+{delta:.2f} điểm):** Kịch bản điều chỉnh giúp sinh viên nâng hạng học lực rõ rệt.")
+        elif delta > 0:
+            advice_lines.append(f"🔵 **Tác động tích cực nhẹ (+{delta:.2f} điểm):** Cải thiện một phần điểm số dự báo.")
+        elif delta < -0.05:
+            advice_lines.append(f"🔴 **Cảnh báo suy giảm ({delta:.2f} điểm):** Thay đổi này làm giảm kết quả dự báo.")
+        else:
+            advice_lines.append("⚪ **Không thay đổi:** Các chỉ số điều chỉnh chưa đủ tạo sự khác biệt.")
+
+        # Pillar recommendations
+        if "chuyen_can" in changes and changes["chuyen_can"] > student_data.get("chuyen_can", 80):
+            advice_lines.append("• **Cố vấn & Đào tạo:** Tăng chuyên cần giúp củng cố kiến thức trên lớp và không bị vắng quá quy định.")
+        if "diem_gk" in changes and changes["diem_gk"] > student_data.get("diem_gk", 7.0):
+            advice_lines.append("• **Học tập & Phụ đạo:** Cải thiện điểm giữa kỳ đòi hỏi tham gia nhóm học tập và ôn luyện trọng tâm môn học.")
+        if "nop_bai_dung_han" in changes and changes["nop_bai_dung_han"] > student_data.get("nop_bai_dung_han", 85):
+            advice_lines.append("• **Kỷ luật LMS:** Nộp bài đúng hạn giúp tích lũy trọn vẹn điểm quá trình và rèn luyện thói quen làm việc.")
+        if "muc_do_stress" in changes and changes["muc_do_stress"] < student_data.get("muc_do_stress", 3):
+            advice_lines.append("• **Hỗ trợ tâm lý:** Giảm áp lực stress giúp sinh viên duy trì sự tập trung và động lực bền vững.")
+
+        advice_lines.append(f"\n*{DISCLAIMER_TEXT}*")
+        return "\n".join(advice_lines)
