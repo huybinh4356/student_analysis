@@ -1,0 +1,85 @@
+{
+  "regression": {
+    "model_name": "Lasso Regression",
+    "task_type": "regression",
+    "artifact_relpath": "regression/best_model.pkl",
+    "version": "3.0.0",
+    "trained_at": "2026-10-04T11:06:34.793835",
+    "cv_metrics": {
+      "cv_r2_mean": 0.9366,
+      "cv_r2_std": 0.0058,
+      "cv_mae": 0.2758
+    },
+    "test_metrics": {
+      "r2": 0.9431,
+      "rmse": 0.3317,
+      "mae": 0.2633
+    },
+    "feature_names": [
+      "gioi_tinh",
+      "que_quan",
+      "nganh_hoc",
+      "diem_thpt",
+      "diem_gk",
+      "lms_gio_truy_cap",
+      "lms_xem_video",
+      "nop_bai_dung_han",
+      "diem_quiz",
+      "diem_bai_tap",
+      "hoan_canh_kt",
+      "di_lam_them",
+      "muc_do_stress",
+      "dong_luc_hoc",
+      "chuyen_can",
+      "muc_tuong_tac",
+      "lms_gio_per_video",
+      "academic_engagement_index",
+      "stress_motivation_ratio",
+      "low_engagement_flag"
+    ],
+    "dataset_version": "default",
+    "selection_reason": "Selected by highest CV R² (0.9366)"
+  },
+  "classification": {
+    "model_name": "XGBoost Classifier",
+    "task_type": "classification",
+    "artifact_relpath": "classification/best_model.pkl",
+    "version": "3.0.0",
+    "trained_at": "2026-10-04T11:06:43.767866",
+    "cv_metrics": {
+      "cv_f1_macro_mean": 0.9573,
+      "cv_f1_macro_std": 0.026,
+      "cv_accuracy": 0.9638
+    },
+    "test_metrics": {
+      "accuracy": 0.98,
+      "f1_macro": 0.9724,
+      "f1_weighted": 0.9799,
+      "recall_high_risk": 0.9091
+    },
+    "feature_names": [
+      "gioi_tinh",
+      "que_quan",
+      "nganh_hoc",
+      "diem_thpt",
+      "diem_gk",
+      "lms_gio_truy_cap",
+      "lms_xem_video",
+      "nop_bai_dung_han",
+      "diem_quiz",
+      "diem_bai_tap",
+      "hoan_canh_kt",
+      "di_lam_them",
+      "muc_do_stress",
+      "dong_luc_hoc",
+      "chuyen_can",
+      "muc_tuong_tac",
+      "lms_gio_per_video",
+      "academic_engagement_index",
+      "stress_motivation_ratio",
+      "low_engagement_flag"
+    ],
+    "dataset_version": "default",
+    "selection_reason": "Selected by highest CV Macro F1 (0.9573)"
+  }
+}
