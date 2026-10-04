@@ -109,6 +109,14 @@ class PredictionService:
         else:
             raise ValueError(f"Unsupported data type for prediction: {type(data)}")
 
+        # Ensure all expected feature columns exist (filled with NaN so SimpleImputer handles them)
+        expected_features = (
+            self._reg_bundle.get("feature_names", []) if self._reg_bundle else FEATURE_COLS
+        )
+        for col in expected_features:
+            if col not in df.columns:
+                df[col] = np.nan
+
         # Ensure domain composite features exist
         df = FeatureEngineer.create_features(df)
         return df

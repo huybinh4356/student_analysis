@@ -126,7 +126,7 @@ class DiagnosisWidget(QWidget):
 
         st = self.current_student
         predicted_score = self.whatif_engine.predict_score(st)
-        risk_label, risk_color = self.whatif_engine.predict_risk(predicted_score)
+        risk_label, risk_color = self.whatif_engine.predict_risk(predicted_score, student_data=st)
 
         missing_fields = self.missing_detector.detect_for_student(st)
         confidence = self.missing_detector.calculate_confidence_penalty(missing_fields)

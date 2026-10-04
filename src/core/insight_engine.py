@@ -136,17 +136,12 @@ class InsightEngine:
         Returns:
             Dict[str, Any]: Comparison of original vs simulated prediction.
         """
-        if self.preprocessor is None or self.reg_model is None or self.cls_model is None:
-            raise RuntimeError("ML Models not loaded properly.")
+        from src.services.prediction_service import PredictionService
+        pred_service = PredictionService(models_dir=self.models_dir)
 
         # Baseline prediction
-        fe_orig = FeatureEngineer.create_features(student_df)
-        X_orig, _, _ = self.preprocessor.prepare_features(fe_orig)
-        X_tr_orig = self.preprocessor.transform(X_orig)
-
-        orig_score = float(self.reg_model.predict(X_tr_orig)[0])
-        orig_risk_code = int(self.cls_model.predict(X_tr_orig)[0])
-        orig_risk_label = self.RISK_LEVEL_LABELS.get(orig_risk_code, "Thấp")
+        orig_score = pred_service.predict_score(student_df)
+        orig_risk_label, _, _ = pred_service.predict_risk(student_df)
 
         # Simulated prediction
         sim_df = student_df.copy()
@@ -155,13 +150,8 @@ class InsightEngine:
         if "diem_gk" in sim_df.columns:
             sim_df["diem_gk"] = np.clip(sim_df["diem_gk"] + diem_gk_delta, 0.0, 10.0)
 
-        fe_sim = FeatureEngineer.create_features(sim_df)
-        X_sim, _, _ = self.preprocessor.prepare_features(fe_sim)
-        X_tr_sim = self.preprocessor.transform(X_sim)
-
-        sim_score = float(self.reg_model.predict(X_tr_sim)[0])
-        sim_risk_code = int(self.cls_model.predict(X_tr_sim)[0])
-        sim_risk_label = self.RISK_LEVEL_LABELS.get(sim_risk_code, "Thấp")
+        sim_score = pred_service.predict_score(sim_df)
+        sim_risk_label, _, _ = pred_service.predict_risk(sim_df)
 
         return {
             "diem_cu": round(orig_score, 2),

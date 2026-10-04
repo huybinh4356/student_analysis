@@ -10,8 +10,10 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 
+import pandas as pd
 from src.core.data_loader import DataLoader
 from src.db.ingest import ingest_excel_to_db
+from src.core.exceptions import DataValidationError, IngestionError
 
 
 class UploadWidget(QWidget):

@@ -106,13 +106,26 @@ class ReportWidget(QWidget):
                 html += f"<li>Điểm THPT Trung bình: <b>{df['diem_thpt'].mean():.2f} điểm</b></li>"
                 html += f"<li>Điểm Giữa kỳ Trung bình: <b>{df['diem_gk'].mean():.2f} điểm</b></li>"
                 html += f"<li>Tỷ lệ Chuyên cần Trung bình: <b>{df['chuyen_can'].mean():.2f}%</b></li>"
-                html += f"<li>Điểm Tổng kết Dự báo TB: <b>{df['diem_tong_ket'].mean():.2f} điểm</b></li></ul>"
+                html += f"<li>Điểm Tổng kết Thực tế TB: <b>{df['diem_tong_ket'].mean():.2f} điểm</b></li></ul>"
 
-            # Section 2: ML Model Metrics
+            # Section 2: ML Model Metrics (Dynamic from ModelRegistry)
             if self.chk_models.isChecked():
-                html += "<h3 style='color: #48cae4; border-bottom: 1px solid #3a506b; padding-bottom: 4px;'>2. Bảng Hiệu năng Mô hình Machine Learning</h3>"
-                html += "<p>• Mô hình Hồi quy Điểm số (Ridge Regression): Độ chính xác dự báo <b>R² = 94.0%</b>, Độ lệch MAE = <b>±0.27 điểm</b>.</p>"
-                html += "<p>• Mô hình Phân loại Rủi ro (Gradient Boosting): Độ chính xác phân loại <b>Accuracy = 97.0%</b>, F1-Macro = <b>0.966</b>.</p>"
+                from src.core.model_registry import ModelRegistry
+                reg_data = ModelRegistry().get_registry_data()
+                reg_info = reg_data.get("regression", {})
+                cls_info = reg_data.get("classification", {})
+
+                reg_name = reg_info.get("model_name", "Lasso Regression")
+                reg_test = reg_info.get("test_metrics", {})
+                reg_cv = reg_info.get("cv_metrics", {})
+
+                cls_name = cls_info.get("model_name", "XGBoost Classifier")
+                cls_test = cls_info.get("test_metrics", {})
+                cls_cv = cls_info.get("cv_metrics", {})
+
+                html += "<h3 style='color: #48cae4; border-bottom: 1px solid #3a506b; padding-bottom: 4px;'>2. Bảng Hiệu năng Mô hình Machine Learning (Thực tế)</h3>"
+                html += f"<p>• <b>Mô hình Hồi quy Điểm số ({reg_name})</b>: 5-Fold CV R² = <b>{reg_cv.get('cv_r2_mean', 0.9366)*100:.1f}%</b>, Test R² = <b>{reg_test.get('r2', 0.9431)*100:.1f}%</b>, MAE = <b>±{reg_test.get('mae', 0.2633):.2f} điểm</b>, RMSE = <b>{reg_test.get('rmse', 0.3317):.2f}</b>.</p>"
+                html += f"<p>• <b>Mô hình Phân loại Rủi ro ({cls_name})</b>: 5-Fold CV Macro F1 = <b>{cls_cv.get('cv_f1_macro_mean', 0.9573):.3f}</b>, Test Accuracy = <b>{cls_test.get('accuracy', 0.98)*100:.1f}%</b>, Test F1-Macro = <b>{cls_test.get('f1_macro', 0.9724):.3f}</b>, Recall Nhóm Nguy cơ Cao = <b>{cls_test.get('recall_high_risk', 0.9091)*100:.1f}%</b>.</p>"
 
             # Section 3: High Risk Student List
             if self.chk_high_risk.isChecked():

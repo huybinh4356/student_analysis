@@ -34,7 +34,7 @@ def test_insight_advice_generation():
 def test_what_if_simulation():
     """Verify What-If simulation re-predicts score and risk."""
     engine = InsightEngine()
-    df = DataLoader.load_from_db().head(1)
+    df = DataLoader.load_data().head(1)
 
     result = engine.simulate_what_if(df, chuyen_can_delta=20.0, diem_gk_delta=2.0)
 

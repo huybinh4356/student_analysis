@@ -29,7 +29,7 @@ def test_model_inference():
     cls_model = joblib.load(models_dir / "risk_classifier_model.pkl")
 
     # Load 5 sample rows
-    df = DataLoader.load_from_db().head(5)
+    df = DataLoader.load_data().head(5)
     fe_df = FeatureEngineer.create_features(df)
     X, _, _ = preprocessor.prepare_features(fe_df)
 

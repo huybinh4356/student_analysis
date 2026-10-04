@@ -41,31 +41,33 @@ class FeatureEngineer:
         """
         data = df.copy()
 
+        lms_video = data["lms_xem_video"] if "lms_xem_video" in data.columns else pd.Series(0.0, index=data.index)
+        lms_hours = data["lms_gio_truy_cap"] if "lms_gio_truy_cap" in data.columns else pd.Series(0.0, index=data.index)
+        chuyen_can = data["chuyen_can"] if "chuyen_can" in data.columns else pd.Series(80.0, index=data.index)
+        nop_bai = data["nop_bai_dung_han"] if "nop_bai_dung_han" in data.columns else pd.Series(80.0, index=data.index)
+        stress = data["muc_do_stress"] if "muc_do_stress" in data.columns else pd.Series(2.0, index=data.index)
+        dong_luc = data["dong_luc_hoc"] if "dong_luc_hoc" in data.columns else pd.Series(3.0, index=data.index)
+
         # 1. LMS Learning Intensity (hours per video watched)
-        #    Captures study depth, not just time spent.
         data["lms_gio_per_video"] = np.where(
-            data["lms_xem_video"] > 0,
-            data["lms_gio_truy_cap"] / data["lms_xem_video"],
+            lms_video > 0,
+            lms_hours / lms_video,
             0.0,
         )
 
         # 2. Academic Engagement Index
-        #    Combines attendance % and on-time submission % into a single engagement score.
-        #    Neither component is a grade — no leakage risk.
         data["academic_engagement_index"] = (
-            0.5 * data["chuyen_can"] + 0.5 * data["nop_bai_dung_han"]
+            0.5 * chuyen_can + 0.5 * nop_bai
         )
 
         # 3. Psychological Pressure Ratio (stress / motivation)
-        #    High ratio → high risk signal independent of grades.
         data["stress_motivation_ratio"] = (
-            data["muc_do_stress"] / (data["dong_luc_hoc"] + 1e-5)
+            stress / (dong_luc + 1e-5)
         )
 
         # 4. Low Engagement Flag
-        #    Binary alert: attendance < 50% OR deadline submission < 50%.
         data["low_engagement_flag"] = (
-            (data["chuyen_can"] < 50.0) | (data["nop_bai_dung_han"] < 50.0)
+            (chuyen_can < 50.0) | (nop_bai < 50.0)
         ).astype(int)
 
         # Sanity check: ensure no banned leakage feature was accidentally created
