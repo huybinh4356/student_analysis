@@ -45,13 +45,28 @@ if not errorlevel 1 (
     echo [INFO] Docker không sẵn sàng — ứng dụng sẽ tự động dùng chế độ Excel fallback.
 )
 
-REM 5. Launch application
+REM 5. Ensure logs directory exists
+if not exist "logs" (
+    mkdir logs
+)
+
+REM 6. Launch Parallel Log & Error Monitor Terminal
+echo [INFO] Khoi dong cua so Terminal giam sat Log & Chan doan loi song song...
+start "Student Analysis -- Live Log & Error Monitor" cmd /k "chcp 65001 >nul && .venv\Scripts\python.exe scripts\log_monitor.py"
+
+REM 7. Launch application
 echo.
-echo [INFO] Đang khởi động giao diện PyQt6...
+echo [INFO] Dang khoi dong giao dien PyQt6...
 .venv\Scripts\python.exe main.py
 
 if errorlevel 1 (
     echo.
-    echo [ERROR] Ứng dụng đã dừng với mã lỗi.
+    echo ==================================================================
+    echo [ERROR] Ung dung khong the khoi dong hoac da dung dot ngot voi loi!
+    echo Chi tiet nguyen nhan duoc ghi nhan day du tai:
+    echo   1. Cua so Terminal 'Live Log & Error Monitor' dang chay song song
+    echo   2. Tep nhat ky loi: logs\error.log
+    echo ==================================================================
+    echo.
     pause
 )
