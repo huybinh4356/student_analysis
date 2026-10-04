@@ -1,24 +1,57 @@
 @echo off
 chcp 65001 > nul
-title Student Performance Analysis System
+title Student Performance Analysis System v3.0
 
 cd /d "%~dp0"
 
 echo ==================================================================
-echo   STUDENT PERFORMANCE ANALYSIS AND PREDICTION SYSTEM
+echo   STUDENT PERFORMANCE ANALYSIS SYSTEM v3.0 (ONE-CLICK LAUNCHER)
 echo ==================================================================
 echo.
-echo [INFO] Launching Desktop Application...
-echo.
 
-if exist ".venv\Scripts\python.exe" (
-    .venv\Scripts\python.exe main.py
-) else (
-    python main.py
+REM 1. Check Python
+python --version >nul 2>&1
+if errorlevel 1 (
+    echo [ERROR] Python chưa được cài đặt hoặc chưa thêm vào PATH!
+    pause
+    exit /b 1
 )
+
+REM 2. Check Virtualenv
+if not exist ".venv\Scripts\python.exe" (
+    echo [INFO] Tạo môi trường ảo .venv...
+    python -m venv .venv
+    echo [INFO] Cài đặt dependencies...
+    .venv\Scripts\python.exe -m pip install --upgrade pip
+    if exist "requirements.txt" (
+        .venv\Scripts\python.exe -m pip install -r requirements.txt
+    )
+)
+
+REM 3. Check .env
+if not exist ".env" (
+    if exist ".env.example" (
+        echo [INFO] Tạo file cấu hình .env từ .env.example...
+        copy .env.example .env > nul
+    )
+)
+
+REM 4. Check Docker (Graceful fallback if Docker is not started)
+docker --version >nul 2>&1
+if not errorlevel 1 (
+    echo [INFO] Khởi động Docker container PostgreSQL (nếu chưa chạy)...
+    docker compose up -d >nul 2>&1
+) else (
+    echo [INFO] Docker không sẵn sàng — ứng dụng sẽ tự động dùng chế độ Excel fallback.
+)
+
+REM 5. Launch application
+echo.
+echo [INFO] Đang khởi động giao diện PyQt6...
+.venv\Scripts\python.exe main.py
 
 if errorlevel 1 (
     echo.
-    echo [ERROR] Application encountered an error or exited unexpectedly.
+    echo [ERROR] Ứng dụng đã dừng với mã lỗi.
     pause
 )
